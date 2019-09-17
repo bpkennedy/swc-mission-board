@@ -2,16 +2,40 @@
   "name": "swc-mission-board-api",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon -w . --exec \"babel-node .\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  },
   "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.13.3",
+    "celebrate": "^10.0.1",
+    "compression": "^1.5.2",
     "connect-history-api-fallback": "^1.6.0",
+    "cors": "^2.7.1",
+    "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "firebase-admin": "^8.4.0",
+    "morgan": "^1.8.0",
     "serve-static": "^1.14.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.4.5",
+    "chai": "^4.2.0",
+    "eslint": "^3.1.1",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.19.1"
   }
 }
