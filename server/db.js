@@ -6,8 +6,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 let db = null
 
-const newDocRef = (collection) => {
-  return db.collection(collection).doc()
+const newDocRef = async (collection) => {
+  return await db.collection(collection).doc()
 }
 
 export const getOne = async ({id, collection}) => {
@@ -43,21 +43,24 @@ export const updateMultiple = async (refSetArray) => {
 }
 
 export const createOne = async ({collection, updateSet}) => {
-  const newUid = newDocRef(db, collection)
-  return db.collection(collection).set(newUid, {
-    uid: newUid,
+  const newRef = await newDocRef(collection)
+  const uid = newRef.id
+  await db.collection(collection).doc(uid).set({
+    uid,
     ...updateSet,
     created_at: new Date(),
     modified_at: new Date(),
   })
+  return getOne({ id: uid, collection: 'tokens'})
 }
 
 export const createMultiple = async (refSetArray) => {
   return db.runTransaction(async t => {
     for (const refSet of refSetArray) {
-      const newUid = newDocRef(db, refSet.collection)
-      await t.set(newUid, {
-        uid: newUid,
+      const newRef = await newDocRef(refSet.collection)
+      const uid = newRef.id
+      await t.doc(uid).set({
+        uid,
         ...refSet.updateSet
       })
     }

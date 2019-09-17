@@ -9,7 +9,9 @@
     "install:server": "cd server && npm install && cd ..",
     "preinstall": "npm install -g @quasar/cli",
     "postinstall": "npm run install:client && npm run install:server",
-    "heroku-postbuild": "cd client && npm run build:pwa && cd ..",
+    "heroku-postbuild": "npm run build:client && npm run build:server",
+    "build:client": "cd client && npm run build:pwa && cd ..",
+    "build:server": "cp -r ./server/authorize ./client/dist/pwa",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
