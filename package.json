@@ -1,56 +1,25 @@
 {
   "name": "swc-mission-board",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A mission board third party tool for the star wars combine online browser game",
-  "productName": "SWC Mission Board",
-  "cordovaId": "org.cordova.quasar.app",
-  "author": "Brian Kennedy <bpkennedy@gmail.com>",
-  "private": true,
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "heroku:build": "npm install -g @quasar/cli && npm run build:pwa",
-    "heroku-postbuild": "npm run heroku:build",
-    "serve": "quasar serve ./dist/spa --history",
-    "serve:pwa": "quasar serve ./dist/pwa --history",
-    "dev": "quasar dev",
-    "build": "npm run build:spa && npm run build:pwa && npm run build:electron",
-    "build:spa": "quasar build -m spa",
-    "build:pwa": "quasar build -m pwa",
-    "build:electron": "quasar build -m electron",
-    "build:cordova": "quasar build -m cordova -T ios",
-    "lint": "eslint --ext .js,.vue src",
-    "lint:fix": "eslint --ext .js,.vue src --fix",
-    "test": "echo \"No test specified\" && exit 0",
-    "test:e2e": "cypress open",
-    "test:e2e:CI": "cypress run"
+    "start": "node server",
+    "install:client": "cd client && npm install && cd ..",
+    "install:server": "cd server && npm install && cd ..",
+    "preinstall": "npm install -g @quasar/cli",
+    "postinstall": "npm run install:client && npm run install:server",
+    "heroku-postbuild": "cd client && npm run build:pwa && cd ..",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "@quasar/extras": "^1.0.0",
-    "axios": "^0.18.1",
-    "connect-history-api-fallback": "^1.6.0",
-    "express": "^4.17.1",
-    "quasar": "^1.0.0",
-    "serve-static": "^1.14.1",
-    "vue-router": "^3.0.7",
-    "vue-i18n": "^8.0.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bpkennedy/swc-mission-board.git"
   },
-  "devDependencies": {
-    "@quasar/app": "^1.0.0",
-    "@quasar/cli": "^1.0.0",
-    "@quasar/quasar-app-extension-testing": "^1.0.0",
-    "@quasar/quasar-app-extension-testing-e2e-cypress": "^1.0.0-beta.10",
-    "@vue/eslint-config-standard": "^4.0.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.10.0",
-    "eslint-loader": "^2.1.1",
-    "eslint-plugin-vue": "^5.0.0"
+  "author": "Brian Kennedy <bpkennedy@gmail.com>",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/bpkennedy/swc-mission-board/issues"
   },
-  "engines": {
-    "node": ">= 8.9.0",
-    "npm": ">= 5.6.0",
-    "yarn": ">= 1.6.0"
-  },
-  "browserslist": [
-    "last 1 version, not dead, ie >= 11"
-  ]
+  "homepage": "https://github.com/bpkennedy/swc-mission-board#readme"
 }
