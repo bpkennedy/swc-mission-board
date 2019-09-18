@@ -135,17 +135,8 @@
       }
 
       function getClientId() {
-        var currentHost = window.location.host;
         var localClientId = 'e5c1500bf34c3cec3761f3049cbc947e1299c7d8';
-        var stagingClientId = 'be5bbce039c4778e4fdde671dd5b9811d15bd313';
-        var prodClientId = 'ac3e2848095aa5cb82f91f7fc7ac7ad53b5a51a1';
-        if (currentHost.indexOf('localhost') > -1) {
-          return localClientId;
-        } else if (currentHost.indexOf('shockball2-staging') > -1) {
-          return stagingClientId;
-        } else {
-          return prodClientId;
-        }
+        return localClientId
       }
   
       function getAccessToken(authCode) {

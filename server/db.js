@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin'
 let serviceAccount
-if (process.env.NODE_ENV !== 'production') {
-  serviceAccount = require('../swc-mission-board-firebase-adminsdk.json')    
+if (process.env.HEROKU !== 'true') {
+  serviceAccount = require('../swc-mission-board-firebase-adminsdk.json')
 }
 
 let db = null
@@ -68,12 +68,12 @@ export const createMultiple = async (refSetArray) => {
 }
 
 export const initializeDb = (callback) => {
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.HEROKU === 'true') {
     admin.initializeApp({
       credential: admin.credential.cert({
         'projectId': process.env.FIREBASE_PROJECT_ID,
         'clientEmail': process.env.FIREBASE_CLIENT_EMAIL,
-        'privateKey': process.env.FIREBASE_PRIVATE_KEY,
+        'privateKey': process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
       })
     })
   } else {
