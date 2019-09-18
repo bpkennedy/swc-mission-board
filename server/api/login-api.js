@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { updateOne, createOne } from '../db'
+import { createOne } from '../db'
 import { getAccessToken } from '../lib/swc'
 
 function dateWithAddedMinutes(expires_in) {

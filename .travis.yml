@@ -19,7 +19,7 @@ script:
   - npm run lint
   - cd client && ./node_modules/.bin/cypress install
   - quasar dev &
-  - npm run test:e2e:CI
+  - npm run test:e2e:CI && cd ..
 
 deploy:
   provider: heroku
