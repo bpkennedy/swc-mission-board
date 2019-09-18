@@ -9,16 +9,11 @@ cache:
     # we also need to cache folder with Cypress binary
     - ~/.cache
 
-jobs:
-  include:
-    - stage: lint
-      script:
-      - npm run lint
-    - stage: test
-      script:
-      - cd client && ./node_modules/.bin/cypress install
-      - quasar dev &
-      - npm run test:e2e:CI
+script:
+  - npm run lint
+  - cd client && ./node_modules/.bin/cypress install
+  - quasar dev &
+  - npm run test:e2e:CI
 
 deploy:
   provider: heroku
