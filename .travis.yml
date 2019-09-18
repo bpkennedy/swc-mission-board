@@ -1,4 +1,10 @@
 language: node_js
+addons:
+  apt:
+    packages:
+    - libgconf-2-4
+services:
+- xvfb
 node_js:
   - "10"
 cache:
