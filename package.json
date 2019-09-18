@@ -4,7 +4,7 @@
   "description": "A mission board third party tool for the star wars combine online browser game",
   "main": "index.js",
   "scripts": {
-    "start": "node server",
+    "start": "cd server && npm start",
     "install:client": "cd client && npm install && cd ..",
     "install:server": "cd server && npm install && cd ..",
     "preinstall": "npm install -g @quasar/cli",
