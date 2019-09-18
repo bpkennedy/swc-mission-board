@@ -1,0 +1,38 @@
+language: node_js
+node_js:
+  - "10"
+cache:
+  # Caches $HOME/.npm when npm ci is default script command
+  # Caches node_modules in all other cases
+  npm: true
+  directories:
+    # we also need to cache folder with Cypress binary
+    - ~/.cache
+
+jobs:
+  include:
+    - stage: lint
+      script:
+      - npm run lint
+    - stage: test
+      script:
+      - cd client && ./node_modules/.bin/cypress install
+      - quasar dev &
+      - npm run test:e2e:CI
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: "WmfG3FVMbsFW40GdS6cKsqd8O+loYU4c+1+5fHQUsG9yocmfsHvXJOPnGLHFVMPbakQ61k0zfk93/J1wVl5offBAY4ZroQchq2aj+kvKq4R+y0+9Y5Vq4j0aAkiHxurgQEzQD1TnA4s1sgqOv0so0yefp179k+CzTXxlJdMwgn62+YQBZ6j6v1KW7zPJt8YF9ko+La/aTI7Fci08i9gQRGCddhFvg92rCCOzUT5WV1XCxMlavxII0pqCeOty0H3Nc5EH48rHMvjF0h3SXA7Qs78QPbGuYYpZSA0WUfMFspGFWxLx8VYrKOr+qtrtuBDz+20MoU7DXB9Wkirzt4wM9C1JKXJ+GL5YLr4qS1AL8Qun4sjxjqOSMehoxGLBpVwfis3+NKKYYpjQyJV4Kfm7pN4dFka+TjN2tZ7oN686VWE39PBC+K1HKpECIlYUOpdSIDqIduqYazjHb2jI2FDzEwoQx5sVv3uS6PnJmUOZj560LUSmKUBl6nYbVQFqWFn0MqqcrXkWE2/g9V4y/VZHck0w45y1Q8+tvzRRSnScn6B1M77JTc+Mrf31gOJW2+PnXYm2Q2uLXwvmqNbfSYDjbWNvMMcXLxlphalCXeKD8YxeKa/j2kH0KJiA1fAGEKCQS8OQqGCVjvLfP/7nbKwMCtnU9hrwRLYgc7B9HTaSR80="
+  app: swc-mission-board
+  on:
+    repo: bpkennedy/swc-mission-board
+
+after_success:
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh success $DISCORD_WEBHOOK_URL
+after_failure:
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh failure $DISCORD_WEBHOOK_URL
