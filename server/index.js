@@ -1,21 +1,7 @@
-// const
-//   express = require('express'),
-//   path = require('path'),
-//   serveStatic = require('serve-static'),
-//   history = require('connect-history-api-fallback'),
-//   port = process.env.PORT || 5000
-
-// const app = express()
-
-// app.use(history())
-// app.use(serveStatic(path.join(__dirname, '..', '/client/dist/pwa')))
-// app.listen(port)
-
-
-
 import http from 'http'
 import path from 'path'
 import express from 'express'
+import { setSecurityConfig } from './lib/helmet'
 import cors from 'cors'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
@@ -25,6 +11,7 @@ import { createApiRoutes } from './api'
 const app = express()
 
 app.server = http.createServer(app)
+setSecurityConfig(app)
 app.use(morgan('dev'))
 app.use(cors({ exposedHeaders: corsHeaders }))
 app.use(bodyParser.json({ limit : bodyLimit }))
