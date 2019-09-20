@@ -1,8 +1,4 @@
 import * as admin from 'firebase-admin'
-let serviceAccount
-if (process.env.HEROKU !== 'true') {
-  serviceAccount = require('../swc-mission-board-firebase-adminsdk.json')
-}
 
 let db = null
 
@@ -77,6 +73,7 @@ export const initializeDb = (callback) => {
       })
     })
   } else {
+    const serviceAccount = require('../swc-mission-board-firebase-adminsdk.json')
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
       databaseURL: 'https://swc-mission-board.firebaseio.com/'
