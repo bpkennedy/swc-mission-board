@@ -17,7 +17,6 @@ export const setSecurityConfig = (app) => {
       prefetchSrc: ["'self'"],
       manifestSrc: ["'self'"],
       workerSrc: ["'self'"],
-      mediaSrc: ["'self"],
       frameAncestors: ["'none'"],
       baseUri: ["'self'"],
       formAction: ["'self'"],
