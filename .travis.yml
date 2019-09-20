@@ -25,7 +25,7 @@ deploy:
   provider: heroku
   api_key:
     secure: "WmfG3FVMbsFW40GdS6cKsqd8O+loYU4c+1+5fHQUsG9yocmfsHvXJOPnGLHFVMPbakQ61k0zfk93/J1wVl5offBAY4ZroQchq2aj+kvKq4R+y0+9Y5Vq4j0aAkiHxurgQEzQD1TnA4s1sgqOv0so0yefp179k+CzTXxlJdMwgn62+YQBZ6j6v1KW7zPJt8YF9ko+La/aTI7Fci08i9gQRGCddhFvg92rCCOzUT5WV1XCxMlavxII0pqCeOty0H3Nc5EH48rHMvjF0h3SXA7Qs78QPbGuYYpZSA0WUfMFspGFWxLx8VYrKOr+qtrtuBDz+20MoU7DXB9Wkirzt4wM9C1JKXJ+GL5YLr4qS1AL8Qun4sjxjqOSMehoxGLBpVwfis3+NKKYYpjQyJV4Kfm7pN4dFka+TjN2tZ7oN686VWE39PBC+K1HKpECIlYUOpdSIDqIduqYazjHb2jI2FDzEwoQx5sVv3uS6PnJmUOZj560LUSmKUBl6nYbVQFqWFn0MqqcrXkWE2/g9V4y/VZHck0w45y1Q8+tvzRRSnScn6B1M77JTc+Mrf31gOJW2+PnXYm2Q2uLXwvmqNbfSYDjbWNvMMcXLxlphalCXeKD8YxeKa/j2kH0KJiA1fAGEKCQS8OQqGCVjvLfP/7nbKwMCtnU9hrwRLYgc7B9HTaSR80="
-  app: swc-mission-board
+  app: swc-mission-board-staging
   on:
     repo: bpkennedy/swc-mission-board
 
