@@ -68,7 +68,7 @@ export const createMultiple = async (refSetArray) => {
 }
 
 export const initializeDb = (callback) => {
-  if (process.env.HEROKU === 'true') {
+  if (process.env.HEROKU === 'true' || process.env.TRAVIS === 'true') {
     admin.initializeApp({
       credential: admin.credential.cert({
         'projectId': process.env.FIREBASE_PROJECT_ID,
