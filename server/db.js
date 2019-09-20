@@ -52,7 +52,7 @@ export const createOne = async ({ collection, updateSet, id }) => {
     created_at: new Date(),
     modified_at: new Date(),
   })
-  return getOne({ id: uid, collection: 'tokens'})
+  return getOne({ id: uid, collection })
 }
 
 export const createMultiple = async (refSetArray) => {

@@ -5,8 +5,12 @@
 </template>
 
 <script>
+import { GET_PROFILE_ACTION } from './store'
 export default {
-  name: 'App'
+  name: 'App',
+  mounted() {
+    this.$store.dispatch(GET_PROFILE_ACTION)
+  }
 }
 </script>
 

@@ -3,6 +3,9 @@
 
 module.exports = function (ctx) {
   return {
+    sourceFiles: {
+      store: 'src/store',
+    },
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     boot: [
