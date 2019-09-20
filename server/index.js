@@ -1,5 +1,6 @@
 import http from 'http'
 import path from 'path'
+import favicon from 'serve-favicon'
 import express from 'express'
 import { setSecurityConfig } from './lib/helmet'
 import cors from 'cors'
@@ -27,6 +28,7 @@ if (process.env.HEROKU === 'true') {
 app.use(cors({ exposedHeaders: corsHeaders }))
 app.use(bodyParser.json({ limit : bodyLimit }))
 app.use(express.static(path.join(__dirname, '../client/dist/pwa')))
+app.use(favicon(path.join(__dirname, '../client/dist/pwa/statics/icons/favicon.ico')))
 
 initializeDb(() => {
   app.use('/api/v1', createApiRoutes())
