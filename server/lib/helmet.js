@@ -32,4 +32,5 @@ export const setSecurityConfig = (app) => {
   }))
   app.use(helmet.noSniff())
   app.use(helmet.xssFilter())
+  app.use(helmet.referrerPolicy({ policy: 'no-referrer' }))
 }
