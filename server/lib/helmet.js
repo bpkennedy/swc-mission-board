@@ -4,7 +4,16 @@ export const setSecurityConfig = (app) => {
   app.use(helmet())
   app.use(helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'"],
+      defaultSrc: ["'none'", "'self'"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        "https://storage.googleapis.com"
+      ],
+      frameAncestors: ["'none'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
     }
   }))
   app.use(helmet.frameguard({ action: 'deny' }))
