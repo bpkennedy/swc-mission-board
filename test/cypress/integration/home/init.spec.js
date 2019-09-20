@@ -1,5 +1,3 @@
-import * as ctx from  '../../../../quasar.conf.js'
-
 describe('Landing', () => {
   beforeEach(() => {
     cy.visit('/')

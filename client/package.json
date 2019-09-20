@@ -17,9 +17,7 @@
     "build:cordova": "quasar build -m cordova -T ios",
     "lint": "eslint --ext .js,.vue src",
     "lint:fix": "eslint --ext .js,.vue src --fix",
-    "test": "echo \"No test specified\" && exit 0",
-    "test:e2e": "cypress open",
-    "test:e2e:CI": "cypress run"
+    "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
@@ -31,8 +29,6 @@
   "devDependencies": {
     "@quasar/app": "^1.0.0",
     "@quasar/cli": "^1.0.0",
-    "@quasar/quasar-app-extension-testing": "^1.0.0",
-    "@quasar/quasar-app-extension-testing-e2e-cypress": "^1.0.0-beta.10",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.10.0",

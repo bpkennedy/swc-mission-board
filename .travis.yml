@@ -1,25 +1,33 @@
 language: node_js
+
+node_js:
+  # Node 10.3+ includes npm@6 which has good "npm ci" command
+  - 10.8
+
+# if using Ubuntu 16 need this library
+# https://github.com/cypress-io/cypress-documentation/pull/1647
 addons:
   apt:
     packages:
     - libgconf-2-4
+
 services:
 - xvfb
-node_js:
-  - "10"
+
 cache:
-  # Caches $HOME/.npm when npm ci is default script command
-  # Caches node_modules in all other cases
-  npm: true
+  # cache both npm modules and Cypress binary
   directories:
-    # we also need to cache folder with Cypress binary
+    - ~/.npm
     - ~/.cache
+  override:
+    - npm ci
+    - npm run cy:verify
 
 script:
   - npm run lint
-  - cd client && ./node_modules/.bin/cypress install
-  - quasar dev &
-  - npm run test:e2e:CI && cd ..
+  - npm run heroku-postbuild
+  - npm start &
+  - npm run test:e2e:CI
 
 deploy:
   provider: heroku
