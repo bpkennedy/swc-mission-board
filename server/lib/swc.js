@@ -45,10 +45,8 @@ export const getAccessToken = async (code) => {
     }
   }
   try {
-    const response = await axios(request)
-    return response
+    return axios(request)
   } catch(response) {
-    const errorMessage = response.response.data.error
-    throw errorMessage
+    throw response.response.data.error
   }
 }

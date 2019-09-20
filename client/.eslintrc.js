@@ -48,6 +48,7 @@ module.exports = {
     'prefer-promise-reject-errors': 'off',
     'space-before-function-paren': 'off',
     'comma-dangle': 'off',
+    'camelcase': 'off',
     'no-useless-escape': 'off',
 
     // allow console.log during development only

@@ -38,9 +38,14 @@ export const updateMultiple = async (refSetArray) => {
   })
 }
 
-export const createOne = async ({collection, updateSet}) => {
-  const newRef = await newDocRef(collection)
-  const uid = newRef.id
+export const createOne = async ({ collection, updateSet, id }) => {
+  let uid
+  if (id) {
+    uid = id
+  } else {
+    const newRef = await newDocRef(collection)
+    uid = newRef.id
+  }
   await db.collection(collection).doc(uid).set({
     uid,
     ...updateSet,

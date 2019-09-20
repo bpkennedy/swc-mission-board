@@ -1,5 +1,12 @@
+import Vue from 'vue'
 import axios from 'axios'
 
-export default async ({ Vue }) => {
-  Vue.prototype.$axios = axios
+const axiosInstance = axios.create({
+  baseURL: 'https://api.example.com'
+})
+
+Vue.prototype.$axios = axiosInstance
+
+export {
+  axiosInstance
 }

@@ -22,7 +22,6 @@ $(document).ready(function() {
   }
 
   window.getAuthorizationCode = function() {
-    console.log('in here')
     var existingAuthorizationCode = window.localStorage.getItem("swcAuthorizationCode");
     if (existingAuthorizationCode) {
       //we have our authorization code but not our access token, so get access token from my api
@@ -37,8 +36,6 @@ $(document).ready(function() {
       }
     }
   }
-  
-  document.getElementById("login").addEventListener("click", window.getAuthorizationCode);
 
   function swcLogin() {
     var hostUrl = window.location.protocol + "//" + window.location.host + "/";
@@ -62,10 +59,12 @@ $(document).ready(function() {
 
     $.ajax(settings).done(function (response) {
       window.localStorage.setItem('swcAccessToken', response.access_token)
-      window.localStorage.setItem('swcAccessTokenExpiresAt', response.expires_at)
+      window.localStorage.setItem('swcExpiresAt', response.expires_at)
       returnToHome()
     }).fail(function(error) {
     });
   }
+
+  document.getElementById("login").addEventListener("click", window.getAuthorizationCode);
 
 });
