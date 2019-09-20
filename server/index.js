@@ -1,7 +1,6 @@
 import http from 'http'
 import path from 'path'
 import express from 'express'
-import sslRedirect from 'heroku-ssl-redirect'
 import { setSecurityConfig } from './lib/helmet'
 import cors from 'cors'
 import morgan from 'morgan'
@@ -13,8 +12,18 @@ const app = express()
 
 app.server = http.createServer(app)
 setSecurityConfig(app)
-app.use(sslRedirect())
 app.use(morgan('dev'))
+
+if (process.env.HEROKU === 'true') {
+  const forceSsl = function (req, res, next) {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(301, ['https://', req.get('Host'), req.url].join(''));
+    }
+    return next()
+  }
+  app.use(forceSsl)
+}
+
 app.use(cors({ exposedHeaders: corsHeaders }))
 app.use(bodyParser.json({ limit : bodyLimit }))
 app.use(express.static(path.join(__dirname, '../client/dist/pwa')))

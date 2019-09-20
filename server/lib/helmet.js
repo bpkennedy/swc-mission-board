@@ -4,13 +4,15 @@ export const setSecurityConfig = (app) => {
   app.use(helmet())
   app.use(helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'none'", "'self'"],
+      defaultSrc: ["'none'"],
       scriptSrc: [
         "'self'",
-        "'unsafe-inline'",
-        "'unsafe-eval'",
         "https://storage.googleapis.com"
       ],
+      connectSrc: ["'self'"],
+      objectSrc: ["'self'"],
+      imgSrc: ["'self'"],
+      styleSrc: ["'self'"],
       frameAncestors: ["'none'"],
       baseUri: ["'self'"],
       formAction: ["'self'"],
