@@ -16,7 +16,21 @@
           Mission Board
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-avatar rounded>
+          <q-img
+            :src="currentUserPhotoUrl"
+            spinner-color="white"
+            style="height: 100%; max-width: 100%"
+          >
+            <q-tooltip
+              anchor="center left"
+              self="center right"
+              :offset="[10, 10]"
+            >
+              {{ currentUserName }}
+            </q-tooltip>
+          </q-img>
+        </q-avatar>
       </q-toolbar>
     </q-header>
 
@@ -142,7 +156,16 @@ export default {
   name: 'MyLayout',
   data () {
     return {
-      leftDrawerOpen: false
+      leftDrawerOpen: false,
+      visible: true,
+    }
+  },
+  computed: {
+    currentUserPhotoUrl() {
+      return this.$store.state.user.image ? this.$store.state.user.image : ''
+    },
+    currentUserName() {
+      return this.$store.state.user.handle ? this.$store.state.user.handle : ''
     }
   },
   methods: {

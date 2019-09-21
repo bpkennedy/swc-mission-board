@@ -11,7 +11,7 @@ export const setSecurityConfig = (app) => {
       ],
       connectSrc: ["'self'"],
       objectSrc: ["'self'"],
-      imgSrc: ["'self'"],
+      imgSrc: ["*", "data:", "blob:"],
       styleSrc: ["'self'"],
       fontSrc: ["'self'"],
       prefetchSrc: ["'self'"],

@@ -9,8 +9,10 @@ function clearTokens() {
 }
 
 function setNewTokens(access, expiresAt) {
-  window.localStorage.setItem('swcAccessToken', access)
-  window.localStorage.setItem('swcExpiresAt', expiresAt)
+  if (access && expiresAt) {
+    window.localStorage.setItem('swcAccessToken', access)
+    window.localStorage.setItem('swcExpiresAt', expiresAt)
+  }
 }
 
 function redirectToOauthLogin() {
