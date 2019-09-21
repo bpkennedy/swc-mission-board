@@ -10,7 +10,7 @@
     "serve": "quasar serve ./dist/spa --history",
     "serve:pwa": "quasar serve ./dist/pwa --history",
     "dev": "quasar dev",
-    "build": "npm run build:pwa",
+    "build": "npm run build:spa",
     "build:spa": "quasar build -m spa",
     "build:pwa": "quasar build -m pwa",
     "build:electron": "quasar build -m electron",

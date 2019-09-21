@@ -27,8 +27,8 @@ if (process.env.HEROKU === 'true') {
 
 app.use(cors({ exposedHeaders: corsHeaders }))
 app.use(bodyParser.json({ limit : bodyLimit }))
-app.use(express.static(path.join(__dirname, '../client/dist/pwa')))
-app.use(favicon(path.join(__dirname, '../client/dist/pwa/statics/icons/favicon.ico')))
+app.use(express.static(path.join(__dirname, '../client/dist/spa')))
+app.use(favicon(path.join(__dirname, '../client/dist/spa/statics/icons/favicon.ico')))
 
 initializeDb(() => {
   app.use('/api/v1', createApiRoutes())
