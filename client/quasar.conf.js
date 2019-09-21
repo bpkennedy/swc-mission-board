@@ -90,7 +90,7 @@ module.exports = function (ctx) {
 
     devServer: {
       // https: true,
-      port: 3000,
+      // port: 8080,
       open: true // opens browser window automatically
     },
 
@@ -104,15 +104,15 @@ module.exports = function (ctx) {
     pwa: {
       // workboxPluginMode: 'InjectManifest',
       // workboxOptions: {}, // only for NON InjectManifest
-      metaVariables: {
-        appleMobileWebAppCapable: 'yes',
-        appleMobileWebAppStatusBarStyle: 'black-translucent',
-        msapplicationTileColor: '#027BE3'
-      },
+      // metaVariables: {
+      //   appleMobileWebAppCapable: 'yes',
+      //   appleMobileWebAppStatusBarStyle: 'black-translucent',
+      //   msapplicationTileColor: '#027BE3'
+      // },
       manifest: {
-        name: 'SWC Mission Board',
-        short_name: 'SWC Mission Board',
-        description: 'A mission board third party tool for the star wars combine online browser game',
+        // name: 'SWC Mission Board',
+        // short_name: 'SWC Mission Board',
+        // description: 'A mission board third party tool for the star wars combine online browser game',
         display: 'fullscreen',
         orientation: 'portrait',
         background_color: '#027BE3',

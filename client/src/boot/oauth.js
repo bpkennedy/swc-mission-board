@@ -17,7 +17,7 @@ function setNewTokens(access, expiresAt) {
 
 function redirectToOauthLogin() {
   clearTokens()
-  window.location.href = hostUrl + 'authorize/index.html'
+  window.location.href = hostUrl + 'statics/authorize/index.html'
 }
 
 async function testIsValidToken(expiresAt) {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 $(document).ready(function() {
   //this handles the redirect from swc - should always have code parameter on the page load.  Otherwise shouldn't have code paramet on page load.
   var authorizationCode = getParameterByName('code');
@@ -40,7 +41,7 @@ $(document).ready(function() {
   function swcLogin() {
     var hostUrl = window.location.protocol + "//" + window.location.host + "/";
     var clientId = getClientId();
-    window.location.href = "http://www.swcombine.com/ws/oauth2/auth/?response_type=code&client_id=" + clientId + "&scope=CHARACTER_READ&redirect_uri=" + hostUrl + "authorize/index.html&state=auth&access_type=offline"
+    window.location.href = "http://www.swcombine.com/ws/oauth2/auth/?response_type=code&client_id=" + clientId + "&scope=CHARACTER_READ&redirect_uri=" + hostUrl + "statics/authorize/index.html&state=auth&access_type=offline"
   }
 
   function getClientId() {
