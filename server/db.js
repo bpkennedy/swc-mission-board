@@ -6,12 +6,16 @@ const newDocRef = async (collection) => {
   return await db.collection(collection).doc()
 }
 
-export const getOne = async ({id, collection}) => {
+export const getOne = async ({ id, collection }) => {
   const doc = await db.collection(collection).doc(id).get()
   if (!doc.exists) {
     return null
   }
   return doc.data()
+}
+
+export const removeOne = async ({ id, collection }) => {
+  return db.collection(collection).doc(id).delete()
 }
 
 export const getAll = async ({collection}) => {

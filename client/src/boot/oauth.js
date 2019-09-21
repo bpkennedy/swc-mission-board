@@ -4,6 +4,7 @@ const hostUrl = window.location.protocol + '//' + window.location.host + '/'
 
 function clearTokens() {
   window.localStorage.removeItem('swcAccessToken')
+  window.localStorage.removeItem('swcAuthorizationCode')
   window.localStorage.removeItem('swcExpiresAt')
 }
 
@@ -54,15 +55,21 @@ function setAxiosInterceptors() {
   })
 }
 
-export default async () => {
+export default async ({ Vue }) => {
   const accessToken = window.localStorage.getItem('swcAccessToken')
   if (!accessToken) {
     redirectToOauthLogin()
   } else {
     const expiresAt = window.localStorage.getItem('swcExpiresAt')
-    const isValid = await testIsValidToken(accessToken, expiresAt)
+    const isValid = await testIsValidToken(expiresAt)
     if (!isValid) {
-      await refreshTokens(accessToken)
+      try {
+        await refreshTokens(accessToken)
+      } catch (error) {
+        if (error.response.data === 'invalid_grant') {
+          redirectToOauthLogin()
+        }
+      }
     }
   }
   setAxiosInterceptors()
