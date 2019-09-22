@@ -1,6 +1,7 @@
 import { axiosInstance } from './axios'
 
 const hostUrl = window.location.protocol + '//' + window.location.host + '/'
+let globalAuthRetries = 0
 
 function clearTokens() {
   window.localStorage.removeItem('swcAccessToken')
@@ -45,18 +46,23 @@ function setAxiosInterceptors() {
 
   axiosInstance.interceptors.response.use(async response => response, async error => {
     if (error.status === '401' || (error.message && error.message.indexOf('401') > -1)) {
-      console.log('API responded with a 401 type error, trying to recover...')
+      console.log('INTCP: API responded with a 401 type error, trying to recover...')
+      globalAuthRetries += 1
+      if (globalAuthRetries === 3) {
+        return Promise.reject(error)
+      }
       const accessToken = window.localStorage.getItem('swcAccessToken')
       if (!accessToken) {
-        console.log('no swc access tokens found, so redirecting to login...')
-        // redirectToOauthLogin()
+        console.log('INTCP: no swc access tokens found, so redirecting to login...')
+        redirectToOauthLogin()
       } else {
-        console.log('swc access token found and presumed old, so refreshing tokens...')
+        console.log('INTCP: swc access token found and presumed old, so refreshing tokens...')
         await refreshTokens(accessToken)
-        console.log('swc tokens have been refreshed, so retrying the original request...')
+        console.log('INTCP: swc tokens have been refreshed, so retrying the original request...')
         const originalRequest = await axiosInstance.request(error.config)
-        console.log('original request succeeded and data is: ')
+        console.log('INTCP: original request succeeded and data is: ')
         console.log(originalRequest)
+        globalAuthRetries = 0
       }
     }
     return Promise.reject(error)
@@ -66,7 +72,7 @@ function setAxiosInterceptors() {
 export default async ({ Vue }) => {
   const accessToken = window.localStorage.getItem('swcAccessToken')
   if (!accessToken) {
-    // redirectToOauthLogin()
+    redirectToOauthLogin()
   } else {
     const expiresAt = window.localStorage.getItem('swcExpiresAt')
     const isValid = await testIsValidToken(expiresAt)

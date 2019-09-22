@@ -3,7 +3,7 @@ import { createOne, getOne, removeOne } from '../db'
 import { getAccessToken, refreshAccessToken } from '../lib/swc'
 
 function dateWithAddedMinutes(expires_in) {
-  const minutes = (expires_in - 120) / 60
+  const minutes = expires_in / 60
   return new Date(new Date().getTime() + (minutes * 60000))
 }
 

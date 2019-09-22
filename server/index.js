@@ -40,7 +40,7 @@ initializeDb(() => {
     if (err && err.response && err.response.status === 401) {
       res.status(401).send({ message: 'Unauthorized' })
     } else {
-      res.status(401).send(err)
+      res.status(400).send(err)
     }
   })
   app.server.listen(process.env.PORT || port, () => {
