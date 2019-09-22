@@ -34,8 +34,10 @@ async function refreshTokens(oldAccessToken) {
       'x-swcmb-access-token': oldAccessToken,
     }
   })
-  clearTokens()
-  setNewTokens(access_token, expires_at)
+  if (access_token && expires_at) {
+    clearTokens()
+    setNewTokens(access_token, expires_at)
+  }
 }
 
 function setAxiosInterceptors() {

@@ -41,13 +41,14 @@ export default () => {
         await removeOne({ collection: 'tokens', id: expiredAccessToken })
         res.status(200).send({ access_token, expires_at })
       } catch (error) {
+        console.log(error)
         if (error.response.data.error === 'invalid_grant') {
           res.status(400).send(error.response.data.error)
         }
       }
     } else {
       // we need to Grant all over again from combine
-      res.redirect(req.baseUrl + '/statics/authorize/index.html')
+      res.redirect('/statics/authorize/index.html')
     }
   })
 
