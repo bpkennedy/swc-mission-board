@@ -69,18 +69,11 @@ async function getSwcUserUid(accessToken) {
 }
 
 export const swcAuthenticatedMiddleware = async (req, res, next) => {
-  try {
-    const { data } = await getSwcUserUid(req.get('x-swcmb-access-token'))
-    if (data) {
-      req.swcUid = data.character.uid
-      req.swcToken = req.get('x-swcmb-access-token')
-    }
-    next()
-  } catch (error) {
-    if (error.response.status === 401) {
-      res.status(401).send(error.response.data)
-    }
-    next(error)
+  const { data } = await getSwcUserUid(req.get('x-swcmb-access-token'))
+  if (data) {
+    req.swcUid = data.character.uid
+    req.swcToken = req.get('x-swcmb-access-token')
   }
+  next()
 }
 

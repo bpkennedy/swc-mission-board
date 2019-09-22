@@ -2,6 +2,7 @@ import http from 'http'
 import path from 'path'
 import favicon from 'serve-favicon'
 import express from 'express'
+import 'express-async-errors'
 import { setSecurityConfig } from './lib/helmet'
 import cors from 'cors'
 import morgan from 'morgan'
@@ -32,6 +33,16 @@ app.use(favicon(path.join(__dirname, '../client/dist/spa/statics/icons/favicon.i
 
 initializeDb(() => {
   app.use('/api/v1', createApiRoutes())
+
+  // 'next' param is absolutely required or else every error will be 500
+  app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+    console.log(err)
+    if (err && err.response && err.response.status === 401) {
+      res.status(401).send({ message: 'Unauthorized' })
+    } else {
+      res.status(401).send(err)
+    }
+  })
   app.server.listen(process.env.PORT || port, () => {
     console.log(`Started on port ${app.server.address().port}`)
     app.emit('apiStarted', null)
