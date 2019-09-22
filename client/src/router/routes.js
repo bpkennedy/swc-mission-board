@@ -6,7 +6,28 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue') }
     ]
-  }
+  },
+  {
+    path: '/public',
+    component: () => import('layouts/MyLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Index.vue') }
+    ]
+  },
+  {
+    path: '/boards',
+    component: () => import('layouts/MyLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Index.vue') }
+    ]
+  },
+  {
+    path: '/missions',
+    component: () => import('layouts/MyLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Index.vue') }
+    ]
+  },
 ]
 
 // Always leave this as last one

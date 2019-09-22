@@ -3,6 +3,7 @@ import path from 'path'
 import favicon from 'serve-favicon'
 import express from 'express'
 import 'express-async-errors'
+import history from 'connect-history-api-fallback'
 import { setSecurityConfig } from './lib/helmet'
 import cors from 'cors'
 import morgan from 'morgan'
@@ -14,6 +15,7 @@ const app = express()
 
 app.server = http.createServer(app)
 setSecurityConfig(app)
+app.use(history())
 app.use(morgan('dev'))
 
 if (process.env.HEROKU === 'true') {
