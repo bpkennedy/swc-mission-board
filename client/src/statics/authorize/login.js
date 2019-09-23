@@ -55,7 +55,10 @@ $(document).ready(function() {
       "async": true,
       "crossDomain": true,
       "url": url + "api/v1/login?authorization_code=" + authCode,
-      "method": "GET"
+      "method": "GET",
+      "headers": {
+        'Accept': 'application/json',
+      },
     }
 
     $.ajax(settings).done(function (response) {

@@ -15,7 +15,8 @@ const app = express()
 
 app.server = http.createServer(app)
 setSecurityConfig(app)
-app.use(history())
+const staticFileMiddleware = express.static(path.join(__dirname, '../client/dist/spa'))
+
 app.use(morgan('dev'))
 
 if (process.env.HEROKU === 'true') {
@@ -30,7 +31,12 @@ if (process.env.HEROKU === 'true') {
 
 app.use(cors({ exposedHeaders: corsHeaders }))
 app.use(bodyParser.json({ limit : bodyLimit }))
-app.use(express.static(path.join(__dirname, '../client/dist/spa')))
+
+app.use(staticFileMiddleware)
+app.use(history())
+app.use(staticFileMiddleware)
+// ^ `app.use(staticFileMiddleware)` is included twice as per https://github.com/bripkens/connect-history-api-fallback/blob/master/examples/static-files-and-index-rewrite/README.md#configuring-the-middleware
+
 app.use(favicon(path.join(__dirname, '../client/dist/spa/statics/icons/favicon.ico')))
 
 initializeDb(() => {
