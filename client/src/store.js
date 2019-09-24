@@ -59,14 +59,15 @@ export default new Vuex.Store({
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'mission-types')
       commit(SET_MISSION_TYPES_MUTATION, data)
     },
-    async [CREATE_MISSION_ACTION]({ dispatch, commit }, formData) {
+    async [CREATE_MISSION_ACTION]({ dispatch, commit }, { formData, closePopupElement }) {
       try {
         await Vue.prototype.$axios.post(apiUrl + 'missions', formData)
         genericSuccess('New Mission created!')
+        closePopupElement.click()
+        dispatch(GET_PUBLIC_MISSIONS_ACTION)
       } catch (error) {
         genericError('An error occurred. Failed to create new mission.')
       }
-      dispatch(GET_PUBLIC_MISSIONS_ACTION)
     }
   },
   mutations: {

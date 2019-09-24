@@ -6,6 +6,7 @@
         dense
         flat
         icon="close"
+        ref="closeButton"
         v-close-popup
       >
         <q-tooltip>
@@ -117,6 +118,16 @@
           />
         </div>
       </q-form>
+      <q-inner-loading
+        :showing="loadingIsVisible"
+        transition-show="fade"
+        transition-hide="fade"
+      >
+        <q-spinner-pie
+          size="4em"
+          color="primary"
+        />
+      </q-inner-loading>
     </q-card-section>
   </q-card>
 </template>
@@ -139,25 +150,30 @@ export default {
       completeByDate: null,
       anonymous: false,
       autoAccept: false,
+      loadingIsVisible: false,
     }
   },
   computed: {
     ...mapGetters([MISSION_TYPES_FOR_SELECT_GETTER])
   },
   methods: {
-    onSubmit () {
-      this.$store.dispatch(CREATE_MISSION_ACTION, {
-        title: this.title.trim(),
-        description: this.description ? this.description.trim() : '',
-        missionType: this.missionType.value,
-        audience: [this.audience],
-        startByDate: this.startByDate ? this.startByDate.trim() : '',
-        completeByDate: this.completeByDate ? this.completeByDate.trim() : '',
-        anonymous: this.anonymous,
-        autoAccept: this.autoAccept,
+    async onSubmit () {
+      this.loadingIsVisible = true
+      await this.$store.dispatch(CREATE_MISSION_ACTION, {
+        formData: {
+          title: this.title.trim(),
+          description: this.description ? this.description.trim() : '',
+          missionType: this.missionType.value,
+          audience: [this.audience],
+          startByDate: this.startByDate ? this.startByDate.trim() : '',
+          completeByDate: this.completeByDate ? this.completeByDate.trim() : '',
+          anonymous: this.anonymous,
+          autoAccept: this.autoAccept,
+        },
+        closePopupElement: this.$refs.closeButton.$el,
       })
+      this.loadingIsVisible = false
     },
-
     onReset () {
       Vue.set(this, 'title', null)
       Vue.set(this, 'description', null)
