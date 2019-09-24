@@ -88,7 +88,7 @@ export default new Vuex.Store({
       if (state.missions.length === 0) {
         return []
       }
-      return state.missions.filter(mission => mission.board_ids.find(id => id === 'public'))
+      return state.missions.filter(mission => mission.board_ids.find(id => id.toLowerCase() === 'public'))
     },
     [MISSION_TYPE_GETTER]: state => id => {
       if (state.missionTypes.length === 0) {

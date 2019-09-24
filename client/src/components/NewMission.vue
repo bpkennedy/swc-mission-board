@@ -40,8 +40,6 @@
           v-model="description"
           label="Mission Description"
           hint="The details of the Mission"
-          lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
         />
         <q-select
           outlined
@@ -149,8 +147,14 @@ export default {
   methods: {
     onSubmit () {
       this.$store.dispatch(CREATE_MISSION_ACTION, {
-        title: this.title,
-        description: this.description
+        title: this.title.trim(),
+        description: this.description ? this.description.trim() : '',
+        missionType: this.missionType.value,
+        audience: [this.audience],
+        startByDate: this.startByDate ? this.startByDate.trim() : '',
+        completeByDate: this.completeByDate ? this.completeByDate.trim() : '',
+        anonymous: this.anonymous,
+        autoAccept: this.autoAccept,
       })
     },
 

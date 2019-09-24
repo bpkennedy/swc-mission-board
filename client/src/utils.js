@@ -12,7 +12,7 @@ export const genericError = (message) => {
   })
 }
 
-export const genericSuccess = (title, icon, message) => {
+export const genericSuccess = (message) => {
   Notify.create({
     color: 'green-4',
     textColor: 'white',
