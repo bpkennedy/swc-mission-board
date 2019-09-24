@@ -38,29 +38,40 @@ module.exports = function (ctx) {
       // all: true, // --- includes everything; for dev only!
 
       components: [
-        'QLayout',
-        'QHeader',
-        'QFooter',
         'QAvatar',
-        'QPageContainer',
-        'QPage',
-        'QToolbar',
         'QBadge',
-        'QTabs',
-        'QRouteTab',
-        'QTooltip',
-        'QToolbarTitle',
-        'QImg',
+        'QBar',
         'QBtn',
-        'QIcon',
+        'QCard',
+        'QCardSection',
+        'QCheckbox',
+        'QToggle',
+        'QDialog',
+        'QFooter',
+        'QForm',
+        'QHeader',
+        'QImg',
+        'QInput',
         'QList',
+        'QIcon',
         'QItem',
+        'QItemLabel',
         'QItemSection',
-        'QItemLabel'
+        'QLayout',
+        'QPage',
+        'QPageContainer',
+        'QRouteTab',
+        'QSelect',
+        'QSpace',
+        'QTabs',
+        'QToolbar',
+        'QToolbarTitle',
+        'QTooltip',
       ],
 
       directives: [
-        'Ripple'
+        'Ripple',
+        'ClosePopup',
       ],
 
       // Quasar plugins
@@ -98,7 +109,9 @@ module.exports = function (ctx) {
     },
 
     // animations: 'all', // --- includes all animations
-    animations: [],
+    animations: [
+      'slideInRight'
+    ],
 
     ssr: {
       pwa: false

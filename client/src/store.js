@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { genericError, genericSuccess } from './utils'
 
 Vue.use(Vuex)
 
@@ -18,12 +19,14 @@ export const GET_PROFILE_ACTION = 'GET_PROFILE_ACTION'
 export const GET_USERS_ACTION = 'GET_USERS_ACTION'
 export const GET_PUBLIC_MISSIONS_ACTION = 'GET_MISSIONS_ACTION'
 export const GET_MISSION_TYPES_ACTION = 'GET_MISSION_TYPES_ACTION'
+export const CREATE_MISSION_ACTION = 'CREATE_MISSION_ACTION'
 export const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
 export const SET_USERS_MUTATION = 'SET_USERS_MUTATION'
 export const SET_PUBLIC_MISSIONS_MUTATION = 'SET_MISSIONS_MUTATION'
 export const SET_MISSION_TYPES_MUTATION = 'SET_MISSION_TYPES_MUTATION'
 export const PUBLIC_MISSIONS_GETTER = 'PUBLIC_MISSIONS_GETTER'
 export const MISSION_TYPE_GETTER = 'MISSION_TYPE_GETTER'
+export const MISSION_TYPES_FOR_SELECT_GETTER = 'MISSION_TYPES_FOR_SELECT_GETTER'
 
 export default new Vuex.Store({
   state: initialState(),
@@ -56,6 +59,15 @@ export default new Vuex.Store({
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'mission-types')
       commit(SET_MISSION_TYPES_MUTATION, data)
     },
+    async [CREATE_MISSION_ACTION]({ dispatch, commit }, formData) {
+      try {
+        await Vue.prototype.$axios.post(apiUrl + 'missions', formData)
+        genericSuccess('New Mission created!')
+      } catch (error) {
+        genericError('An error occurred. Failed to create new mission.')
+      }
+      dispatch(GET_PUBLIC_MISSIONS_ACTION)
+    }
   },
   mutations: {
     [SET_PROFILE_MUTATION](state, user) {
@@ -83,6 +95,16 @@ export default new Vuex.Store({
         return ''
       }
       return state.missionTypes.find(type => type.id === id).name
+    },
+    [MISSION_TYPES_FOR_SELECT_GETTER]: state => {
+      const selectArray = []
+      for (const type of state.missionTypes) {
+        selectArray.push({
+          label: type.name,
+          value: type.uid,
+        })
+      }
+      return selectArray
     }
   }
 })
