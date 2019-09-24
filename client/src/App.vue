@@ -5,11 +5,12 @@
 </template>
 
 <script>
-import { GET_PROFILE_ACTION } from './store'
+import { GET_INITIAL_APP_DATA } from './store'
+
 export default {
   name: 'App',
   mounted() {
-    this.$store.dispatch(GET_PROFILE_ACTION)
+    this.$store.dispatch(GET_INITIAL_APP_DATA)
   }
 }
 </script>

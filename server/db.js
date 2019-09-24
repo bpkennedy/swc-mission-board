@@ -6,6 +6,18 @@ const newDocRef = async (collection) => {
   return await db.collection(collection).doc()
 }
 
+function iterateSnapshotForItems(snapshot) {
+  if (snapshot.empty) {
+    return []
+  }
+  
+  const items = []
+  for (let p=0;p < snapshot.docs.length; p++) {
+    items.push(snapshot.docs[p].data())
+  }
+  return items
+}
+
 export const getOne = async ({ id, collection }) => {
   const doc = await db.collection(collection).doc(id).get()
   if (!doc.exists) {
@@ -19,12 +31,23 @@ export const removeOne = async ({ id, collection }) => {
 }
 
 export const getAll = async ({collection}) => {
-  const items = []
   const snapshot = await db.collection(collection).get()
-  snapshot.forEach(doc => {
-    items.push(doc.data())
-  })
-  return items
+  return iterateSnapshotForItems(snapshot)
+}
+
+export const query = async ({ collection, querySets }) => {
+  let ref = db.collection(collection)
+  let query
+  for (let p=0; p < querySets.length; p++) {
+    if (p === 0) {
+      query = ref.where(querySets[p].field, querySets[p].comparison, querySets[p].value)
+    } else {
+      query.where(querySets[p].field, querySets[p].comparison, querySets[p].value)
+    }
+  }
+  const snapshot = await query.get()
+
+  return iterateSnapshotForItems(snapshot)
 }
 
 export const updateOne = async ({ id, collection, updateSet }) => {

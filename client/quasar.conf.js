@@ -45,6 +45,7 @@ module.exports = function (ctx) {
         'QPageContainer',
         'QPage',
         'QToolbar',
+        'QBadge',
         'QTabs',
         'QRouteTab',
         'QTooltip',

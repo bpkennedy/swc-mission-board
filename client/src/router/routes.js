@@ -11,7 +11,7 @@ const routes = [
     path: '/public',
     component: () => import('layouts/MyLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      { path: '', component: () => import('pages/Public.vue') }
     ]
   },
   {

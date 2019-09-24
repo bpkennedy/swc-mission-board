@@ -32,15 +32,14 @@ if (process.env.HEROKU === 'true') {
 app.use(cors({ exposedHeaders: corsHeaders }))
 app.use(bodyParser.json({ limit : bodyLimit }))
 
-app.use(staticFileMiddleware)
-app.use(history())
-app.use(staticFileMiddleware)
-// ^ `app.use(staticFileMiddleware)` is included twice as per https://github.com/bripkens/connect-history-api-fallback/blob/master/examples/static-files-and-index-rewrite/README.md#configuring-the-middleware
-
 app.use(favicon(path.join(__dirname, '../client/dist/spa/statics/icons/favicon.ico')))
 
 initializeDb(() => {
   app.use('/api/v1', createApiRoutes())
+  app.use(staticFileMiddleware)
+  app.use(history())
+  app.use(staticFileMiddleware)
+  // ^ `app.use(staticFileMiddleware)` is included twice as per https://github.com/bripkens/connect-history-api-fallback/blob/master/examples/static-files-and-index-rewrite/README.md#configuring-the-middleware
 
   // 'next' param is absolutely required or else every error will be 500
   app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars

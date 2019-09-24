@@ -17,8 +17,7 @@ export default () => {
 	let api = Router()
 
 	api.get('/', swcAuthenticatedMiddleware, async (req, res) => {
-		const users = await getAll({collection: 'users'})
-    res.status(200).send(users)
+    res.status(200).send(await getAll({collection: 'users'}))
 	})
 	
 	api.get('/me', swcAuthenticatedMiddleware, async (req, res) => {
