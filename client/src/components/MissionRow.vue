@@ -5,11 +5,21 @@
       avatar
     >
       <q-avatar
+        v-if="mission.anonymous"
         color="primary"
         text-color="white"
         icon="public"
       >
         <q-tooltip>Public Mission</q-tooltip>
+      </q-avatar>
+      <q-avatar
+        v-else
+        rounded
+      >
+        <img :src="getUserImageFromUid(mission.created_by)">
+        <q-tooltip>
+          Public Mission by {{ getUserNameFromUid(mission.created_by) }}
+        </q-tooltip>
       </q-avatar>
     </q-item-section>
 
@@ -54,6 +64,14 @@ export default {
   methods: {
     missionType(typeId) {
       return this.$store.state.missionTypes.find(type => type.uid === typeId).name
+    },
+    getUserImageFromUid(uid) {
+      const creator = this.$store.state.users.find(user => user.uid === uid)
+      return creator.image
+    },
+    getUserNameFromUid(uid) {
+      const creator = this.$store.state.users.find(user => user.uid === uid)
+      return creator.handle
     }
   }
 }

@@ -29,9 +29,10 @@ export default () => {
       start_by_date: req.body.startByDate,
       complete_by_date: req.body.completeByDate,
       description: req.body.description,
-      status: 'Unpaid',
       title: req.body.title,
-      board_ids: req.body.audience
+      board_ids: req.body.audience,
+      status: 'Unpaid',
+      created_by: req.swcUid,
     }
     const newMission = await createOne({ collection: 'missions', updateSet })
     res.status(201).send(newMission)
