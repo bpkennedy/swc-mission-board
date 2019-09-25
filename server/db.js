@@ -1,4 +1,6 @@
 import * as admin from 'firebase-admin'
+import { stripAnonymousMissions } from './lib/util'
+
 
 let db = null
 
@@ -15,7 +17,7 @@ function iterateSnapshotForItems(snapshot) {
   for (let p=0;p < snapshot.docs.length; p++) {
     items.push(snapshot.docs[p].data())
   }
-  return items
+  return stripAnonymousMissions(items)
 }
 
 export const getOne = async ({ id, collection }) => {

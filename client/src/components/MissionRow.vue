@@ -5,12 +5,12 @@
       avatar
     >
       <q-avatar
-        v-if="mission.anonymous"
+        v-if="mission.created_by === null"
         color="primary"
         text-color="white"
-        icon="public"
+        icon="face"
       >
-        <q-tooltip>Public Mission</q-tooltip>
+        <q-tooltip>Anonymous Public Mission</q-tooltip>
       </q-avatar>
       <q-avatar
         v-else
@@ -38,13 +38,6 @@
       top
     >
       <q-badge :label="this.missionType(mission.mission_type_id)" />
-      <q-icon
-        v-if="mission.anonymous"
-        name="face"
-        color="black"
-      >
-        <q-tooltip>Anonymous</q-tooltip>
-      </q-icon>
     </q-item-section>
   </q-item>
 </template>
