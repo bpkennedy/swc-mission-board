@@ -16,9 +16,9 @@
         v-else
         rounded
       >
-        <img :src="getUserImageFromUid(mission.created_by)">
+        <img :src="getMissionImageFromUid(mission)">
         <q-tooltip>
-          Public Mission by {{ getUserNameFromUid(mission.created_by) }}
+          Public Mission by {{ getMissionNameFromUid(mission) }}
         </q-tooltip>
       </q-avatar>
     </q-item-section>
@@ -58,12 +58,20 @@ export default {
     missionType(typeId) {
       return this.$store.state.missionTypes.find(type => type.uid === typeId).name
     },
-    getUserImageFromUid(uid) {
-      const creator = this.$store.state.users.find(user => user.uid === uid)
-      return creator.image
+    getMissionImageFromUid(mission) {
+      if (mission.origin_board_id) {
+        const boardCreator = this.$store.state.boards.find(board => board.uid === mission.origin_board_id)
+        return boardCreator.image
+      }
+      const userCreator = this.$store.state.users.find(user => user.uid === mission.created_by)
+      return userCreator.image
     },
-    getUserNameFromUid(uid) {
-      const creator = this.$store.state.users.find(user => user.uid === uid)
+    getMissionNameFromUid(mission) {
+      if (mission.origin_board_id) {
+        const boardCreator = this.$store.state.boards.find(board => board.uid === mission.origin_board_id)
+        return boardCreator.name
+      }
+      const creator = this.$store.state.users.find(user => user.uid === mission.created_by)
       return creator.handle
     }
   }

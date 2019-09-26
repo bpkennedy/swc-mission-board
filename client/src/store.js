@@ -10,6 +10,7 @@ const initialState = () => {
     user: {},
     users: [],
     missions: [],
+    boards: [],
     missionTypes: [],
   }
 }
@@ -20,13 +21,17 @@ export const GET_USERS_ACTION = 'GET_USERS_ACTION'
 export const GET_PUBLIC_MISSIONS_ACTION = 'GET_MISSIONS_ACTION'
 export const GET_MISSION_TYPES_ACTION = 'GET_MISSION_TYPES_ACTION'
 export const CREATE_MISSION_ACTION = 'CREATE_MISSION_ACTION'
+
 export const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
 export const SET_USERS_MUTATION = 'SET_USERS_MUTATION'
 export const SET_PUBLIC_MISSIONS_MUTATION = 'SET_MISSIONS_MUTATION'
+export const SET_BOARDS_MUTATION = 'SET_BOARDS_MUTATION'
 export const SET_MISSION_TYPES_MUTATION = 'SET_MISSION_TYPES_MUTATION'
+
 export const PUBLIC_MISSIONS_GETTER = 'PUBLIC_MISSIONS_GETTER'
 export const MISSION_TYPE_GETTER = 'MISSION_TYPE_GETTER'
 export const MISSION_TYPES_FOR_SELECT_GETTER = 'MISSION_TYPES_FOR_SELECT_GETTER'
+export const BOARDS_FOR_SELECT_GETTER = 'BOARDS_FOR_SELECT_GETTER'
 
 export default new Vuex.Store({
   state: initialState(),
@@ -36,12 +41,14 @@ export default new Vuex.Store({
       const users = Vue.prototype.$axios.get(apiUrl + 'users')
       const missionTypes = Vue.prototype.$axios.get(apiUrl + 'mission-types')
       const publicMissions = Vue.prototype.$axios.get(apiUrl + 'missions/public')
+      const boards = Vue.prototype.$axios.get(apiUrl + 'boards')
 
-      const bootupData = await Promise.all([profile, users, missionTypes, publicMissions])
+      const bootupData = await Promise.all([profile, users, missionTypes, publicMissions, boards])
       commit(SET_PROFILE_MUTATION, bootupData[0].data)
       commit(SET_USERS_MUTATION, bootupData[1].data)
       commit(SET_MISSION_TYPES_MUTATION, bootupData[2].data)
       commit(SET_PUBLIC_MISSIONS_MUTATION, bootupData[3].data)
+      commit(SET_BOARDS_MUTATION, bootupData[4].data)
     },
     async [GET_PROFILE_ACTION]({ commit }) {
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'users/me')
@@ -80,6 +87,9 @@ export default new Vuex.Store({
     [SET_PUBLIC_MISSIONS_MUTATION](state, missions) {
       Vue.set(state, 'missions', [ ...missions ])
     },
+    [SET_BOARDS_MUTATION](state, boards) {
+      Vue.set(state, 'boards', [ ...boards ])
+    },
     [SET_MISSION_TYPES_MUTATION](state, types) {
       Vue.set(state, 'missionTypes', [ ...types ])
     },
@@ -98,14 +108,16 @@ export default new Vuex.Store({
       return state.missionTypes.find(type => type.id === id).name
     },
     [MISSION_TYPES_FOR_SELECT_GETTER]: state => {
-      const selectArray = []
-      for (const type of state.missionTypes) {
-        selectArray.push({
-          label: type.name,
-          value: type.uid,
-        })
-      }
-      return selectArray
+      return state.missionTypes.map(type => ({
+        label: type.name,
+        value: type.uid,
+      }))
+    },
+    [BOARDS_FOR_SELECT_GETTER]: state => {
+      return state.boards.map(board => ({
+        label: board.name,
+        value: board.uid,
+      })).filter(b => b.label.toLowerCase() !== 'public')
     }
   }
 })

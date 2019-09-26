@@ -56,6 +56,14 @@
           label="Audience"
           hint="Public or Private Mission?"
         />
+        <q-select
+          v-if="audience === 'Private'"
+          outlined
+          v-model="board"
+          :options="BOARDS_FOR_SELECT_GETTER"
+          label="Board"
+          hint="Which board is this mission for?"
+        />
         <q-input
           outlined
           v-model="startByDate"
@@ -135,7 +143,11 @@
 <script>
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import { CREATE_MISSION_ACTION, MISSION_TYPES_FOR_SELECT_GETTER } from '../store'
+import {
+  CREATE_MISSION_ACTION,
+  BOARDS_FOR_SELECT_GETTER,
+  MISSION_TYPES_FOR_SELECT_GETTER
+} from '../store'
 
 export default {
   name: 'NewMission',
@@ -146,6 +158,7 @@ export default {
       missionType: null,
       audience: 'Public',
       audienceOptions: ['Public', 'Private'],
+      board: null,
       startByDate: null,
       completeByDate: null,
       anonymous: false,
@@ -154,7 +167,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([MISSION_TYPES_FOR_SELECT_GETTER])
+    ...mapGetters([
+      MISSION_TYPES_FOR_SELECT_GETTER,
+      BOARDS_FOR_SELECT_GETTER,
+    ])
   },
   methods: {
     async onSubmit () {
@@ -164,11 +180,12 @@ export default {
           title: this.title.trim(),
           description: this.description ? this.description.trim() : '',
           missionType: this.missionType.value,
-          audience: [this.audience],
+          audience: this.board ? [this.board.value] : [this.audience],
           startByDate: this.startByDate ? this.startByDate.trim() : '',
           completeByDate: this.completeByDate ? this.completeByDate.trim() : '',
           anonymous: this.anonymous,
           autoAccept: this.autoAccept,
+          originBoard: null,
         },
         closePopupElement: this.$refs.closeButton.$el,
       })

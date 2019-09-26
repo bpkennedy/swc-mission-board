@@ -20,6 +20,7 @@ export default () => {
       description: Joi.string().allow('').optional(),
       title: Joi.string().required(),
       audience: Joi.array().items(Joi.string().required()),
+      originBoard: Joi.string().required().allow(null),
     })
   }), async (req, res) => {
     const updateSet = {
@@ -31,6 +32,7 @@ export default () => {
       description: req.body.description,
       title: req.body.title,
       board_ids: req.body.audience,
+      origin_board_id: req.body.originBoard,
       status: 'Unpaid',
       created_by: req.swcUid,
     }
