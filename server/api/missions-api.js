@@ -56,6 +56,23 @@ export default () => {
     }))
   })
   
+  api.get('/board/:id', swcAuthenticatedMiddleware, async (req, res) => {
+    const appUser = await getOne({ collection: 'users', id: req.swcUid})
+    if (appUser.board_ids.includes(req.params.id)) {
+      const BoardMissionsQuery = [{
+        field: 'board_ids',
+        comparison: 'array-contains',
+        value: req.params.id
+      }]
+      res.status(200).send(await query({
+        collection: 'missions',
+        querySets: BoardMissionsQuery
+      }))
+    } else {
+      res.status(403).send({ message: 'Forbidden' })
+    }
+  })
+  
   api.get('/:id', swcAuthenticatedMiddleware, async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
     if (mission) {

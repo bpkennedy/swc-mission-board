@@ -1,13 +1,6 @@
 
 const routes = [
   {
-    path: '/',
-    component: () => import('layouts/MyLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/Index.vue') }
-    ]
-  },
-  {
     path: '/public',
     component: () => import('layouts/MyLayout.vue'),
     children: [
@@ -15,14 +8,26 @@ const routes = [
     ]
   },
   {
-    path: '/boards',
+    path: '/missions',
     component: () => import('layouts/MyLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Boards.vue') }
+      { path: '', component: () => import('pages/Index.vue') },
     ]
   },
   {
-    path: '/missions',
+    path: '/boards',
+    component: () => import('layouts/MyLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Boards.vue') },
+      {
+        name: 'boardMissions',
+        path: ':id',
+        component: () => import('pages/BoardMissions.vue')
+      }
+    ]
+  },
+  {
+    path: '/',
     component: () => import('layouts/MyLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Index.vue') }

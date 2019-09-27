@@ -13,6 +13,7 @@
         v-for="board of validBoards"
         :key="board.uid"
         :board="board"
+        @click.native="goToBoard(board.uid)"
       />
     </q-page>
   </transition>
@@ -38,5 +39,10 @@ export default {
       return this.boards.filter(board => board.name.toLowerCase() !== 'public')
     }
   },
+  methods: {
+    goToBoard(id) {
+      this.$router.push({ name: 'boardMissions', params: { id } })
+    }
+  }
 }
 </script>

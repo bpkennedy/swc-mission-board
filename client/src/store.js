@@ -11,6 +11,7 @@ const initialState = () => {
     users: [],
     missions: [],
     boards: [],
+    boardMissions: [],
     missionTypes: [],
   }
 }
@@ -19,14 +20,16 @@ export const GET_INITIAL_APP_DATA = 'GET_INITIAL_APP_DATA'
 export const GET_PROFILE_ACTION = 'GET_PROFILE_ACTION'
 export const GET_USERS_ACTION = 'GET_USERS_ACTION'
 export const GET_PUBLIC_MISSIONS_ACTION = 'GET_MISSIONS_ACTION'
+export const GET_BOARD_MISSIONS_ACTION = 'GET_BOARD_MISSIONS_ACTION'
 export const GET_MISSION_TYPES_ACTION = 'GET_MISSION_TYPES_ACTION'
 export const CREATE_MISSION_ACTION = 'CREATE_MISSION_ACTION'
 
-export const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
-export const SET_USERS_MUTATION = 'SET_USERS_MUTATION'
-export const SET_PUBLIC_MISSIONS_MUTATION = 'SET_MISSIONS_MUTATION'
-export const SET_BOARDS_MUTATION = 'SET_BOARDS_MUTATION'
-export const SET_MISSION_TYPES_MUTATION = 'SET_MISSION_TYPES_MUTATION'
+const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
+const SET_USERS_MUTATION = 'SET_USERS_MUTATION'
+const SET_PUBLIC_MISSIONS_MUTATION = 'SET_MISSIONS_MUTATION'
+const SET_BOARD_MISSIONS_MUTATION = 'SET_BOARD_MISSIONS_MUTATION'
+const SET_BOARDS_MUTATION = 'SET_BOARDS_MUTATION'
+const SET_MISSION_TYPES_MUTATION = 'SET_MISSION_TYPES_MUTATION'
 
 export const PUBLIC_MISSIONS_GETTER = 'PUBLIC_MISSIONS_GETTER'
 export const MISSION_TYPE_GETTER = 'MISSION_TYPE_GETTER'
@@ -62,6 +65,17 @@ export default new Vuex.Store({
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'missions/public')
       commit(SET_PUBLIC_MISSIONS_MUTATION, data)
     },
+    async [GET_BOARD_MISSIONS_ACTION]({ commit }, { boardId, router }) {
+      try {
+        const { data } = await Vue.prototype.$axios.get(apiUrl + 'missions/board/' + boardId)
+        commit(SET_BOARD_MISSIONS_MUTATION, data)
+      } catch (error) {
+        if (error.response.data.message === 'Forbidden') {
+          genericError('You do not have access to this board.')
+          router.back()
+        }
+      }
+    },
     async [GET_MISSION_TYPES_ACTION]({ commit }) {
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'mission-types')
       commit(SET_MISSION_TYPES_MUTATION, data)
@@ -86,6 +100,9 @@ export default new Vuex.Store({
     },
     [SET_PUBLIC_MISSIONS_MUTATION](state, missions) {
       Vue.set(state, 'missions', [ ...missions ])
+    },
+    [SET_BOARD_MISSIONS_MUTATION](state, boardMissions) {
+      Vue.set(state, 'boardMissions', [ ...boardMissions ])
     },
     [SET_BOARDS_MUTATION](state, boards) {
       Vue.set(state, 'boards', [ ...boards ])

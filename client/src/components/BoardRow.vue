@@ -1,10 +1,11 @@
 <template>
   <q-card class="board-card">
-    <q-img :src="board.image">
-      <div class="text-h5 absolute-bottom text-left">
+    <img :src="board.image">
+    <q-card-section>
+      <div class="text-h6">
         {{ board.name }}
       </div>
-    </q-img>
+    </q-card-section>
   </q-card>
 </template>
 

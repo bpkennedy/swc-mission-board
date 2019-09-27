@@ -7,7 +7,6 @@
       icon="public"
       to="/public"
       exact
-      replace
       aria-label="Public Navigation"
     >
       Public
@@ -16,7 +15,6 @@
       icon="developer_board"
       to="/boards"
       exact
-      replace
       aria-label="Boards Navigation"
     >
       Boards
@@ -25,7 +23,6 @@
       icon="assignment"
       to="/missions"
       exact
-      replace
       aria-label="Missions Navigation"
     >
       Missions
