@@ -13,7 +13,7 @@
         v-for="board of validBoards"
         :key="board.uid"
         :board="board"
-        @click.native="goToBoard(board.uid)"
+        @click.native="goToBoard(board)"
       />
     </q-page>
   </transition>
@@ -40,8 +40,14 @@ export default {
     }
   },
   methods: {
-    goToBoard(id) {
-      this.$router.push({ name: 'boardMissions', params: { id } })
+    goToBoard(board) {
+      this.$router.push({
+        name: 'boardMissions',
+        params: {
+          id: board.uid,
+          boardName: board.name,
+        },
+      })
     }
   }
 }

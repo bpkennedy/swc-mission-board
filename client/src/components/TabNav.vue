@@ -25,7 +25,7 @@
       exact
       aria-label="Missions Navigation"
     >
-      Missions
+      My Missions
     </q-route-tab>
   </q-tabs>
 </template>

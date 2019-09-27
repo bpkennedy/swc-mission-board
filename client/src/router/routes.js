@@ -4,25 +4,37 @@ const routes = [
     path: '/public',
     component: () => import('layouts/MyLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Public.vue') }
+      {
+        name: 'Public Missions',
+        path: '',
+        component: () => import('pages/Public.vue')
+      }
     ]
   },
   {
     path: '/missions',
     component: () => import('layouts/MyLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') },
+      {
+        name: 'My Missions',
+        path: '',
+        component: () => import('pages/Index.vue')
+      },
     ]
   },
   {
     path: '/boards',
     component: () => import('layouts/MyLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Boards.vue') },
+      {
+        name: 'Boards',
+        path: '',
+        component: () => import('pages/Boards.vue')
+      },
       {
         name: 'boardMissions',
         path: ':id',
-        component: () => import('pages/BoardMissions.vue')
+        component: () => import('pages/BoardMissions.vue'),
       }
     ]
   },
@@ -30,7 +42,11 @@ const routes = [
     path: '/',
     component: () => import('layouts/MyLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      {
+        name: 'SWC Mission Board',
+        path: '',
+        component: () => import('pages/Index.vue')
+      }
     ]
   },
 ]

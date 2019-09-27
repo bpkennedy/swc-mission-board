@@ -2,7 +2,7 @@
   <q-header elevated>
     <q-toolbar>
       <q-toolbar-title>
-        Mission Board
+        {{ getPageTitle }}
       </q-toolbar-title>
 
       <q-btn
@@ -53,6 +53,12 @@ export default {
     currentUserPhotoUrl() {
       return this.$store.state.user.image ? this.$store.state.user.image : ''
     },
+    getPageTitle() {
+      if (this.$route.params.boardName) {
+        return this.$route.params.boardName
+      }
+      return this.$route.name
+    }
   },
 }
 </script>
