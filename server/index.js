@@ -16,6 +16,7 @@ const app = express()
 app.server = http.createServer(app)
 setSecurityConfig(app)
 const staticFileMiddleware = express.static(path.join(__dirname, '../client/dist/spa'))
+const staticMapMiddleware = express.static(path.join(__dirname, './map'))
 
 app.use(morgan('dev'))
 
@@ -36,8 +37,10 @@ app.use(favicon(path.join(__dirname, '../client/dist/spa/statics/icons/favicon.i
 
 initializeDb(() => {
   app.use('/api/v1', createApiRoutes())
+  app.use('/map', staticMapMiddleware)
   app.use(staticFileMiddleware)
   app.use(history())
+  app.use('/map', staticMapMiddleware)
   app.use(staticFileMiddleware)
   // ^ `app.use(staticFileMiddleware)` is included twice as per https://github.com/bripkens/connect-history-api-fallback/blob/master/examples/static-files-and-index-rewrite/README.md#configuring-the-middleware
 

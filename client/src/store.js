@@ -4,7 +4,9 @@ import { genericError, genericSuccess } from './utils'
 
 Vue.use(Vuex)
 
-const apiUrl = window.location.protocol + '//' + window.location.host + '/api/v1/'
+export const fqdn = window.location.protocol + '//' + window.location.host
+const apiUrl = fqdn + '/api/v1/'
+
 const initialState = () => {
   return {
     user: {},

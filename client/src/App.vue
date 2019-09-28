@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import 'leaflet/dist/leaflet.css'
 import { GET_INITIAL_APP_DATA } from './store'
 
 export default {
