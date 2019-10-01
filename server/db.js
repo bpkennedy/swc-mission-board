@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin'
 import { stripAnonymousMissions } from './lib/util'
 
-export let systems = []
+let systems = []
 let db = null
 
 const newDocRef = async (collection) => {
@@ -95,6 +95,10 @@ export const createMultiple = async (refSetArray) => {
       })
     }
   })
+}
+
+export const getSystems = () => {
+  return systems
 }
 
 async function loadSystems() {

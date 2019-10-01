@@ -21,6 +21,10 @@ export default () => {
       title: Joi.string().required(),
       audience: Joi.array().items(Joi.string().required()),
       originBoard: Joi.string().required().allow(null),
+      startingSector: Joi.string().allow('').optional(),
+      startingSystem: Joi.string().allow('').optional(),
+      endingSector: Joi.string().allow('').optional(),
+      endingSystem: Joi.string().allow('').optional(),
     })
   }), async (req, res) => {
     const updateSet = {
@@ -33,7 +37,11 @@ export default () => {
       title: req.body.title,
       board_ids: req.body.audience,
       origin_board_id: req.body.originBoard,
-      status: 'Unpaid',
+      starting_sector: req.body.startingSector,
+      starting_system: req.body.startingSystem,
+      ending_sector: req.body.endingSector,
+      ending_system: req.body.endingSystem,
+      status: 'Available',
       created_by: req.swcUid,
     }
     const newMission = await createOne({ collection: 'missions', updateSet })

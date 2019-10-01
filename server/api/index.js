@@ -5,6 +5,7 @@ import missionTypesApi from './mission-types-api'
 import boardsApi from './boards-api'
 import missionsApi from './missions-api'
 import tasksApi from './tasks-api'
+import sectorsApi from './sectors-api'
 
 export const createApiRoutes = () => {
 	let api = Router()
@@ -14,5 +15,6 @@ export const createApiRoutes = () => {
 	api.use('/mission-types', missionTypesApi())
 	api.use('/boards', boardsApi())
 	api.use('/tasks', tasksApi())
+	api.use('/sectors', sectorsApi())
 	return api
 }

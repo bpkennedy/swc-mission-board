@@ -64,6 +64,52 @@
           label="Board"
           hint="Which board is this mission for?"
         />
+        <q-select
+          outlined
+          v-model="sector"
+          use-input
+          clearable
+          input-debounce="0"
+          @filter="filterSectors"
+          :options="filteredSectors"
+          behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'"
+          label="Starting Sector"
+        />
+        <q-select
+          v-if="sector"
+          outlined
+          v-model="system"
+          use-input
+          clearable
+          input-debounce="0"
+          @filter="filterSystems"
+          :options="filteredSystems"
+          behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'"
+          label="Starting System"
+        />
+        <q-select
+          outlined
+          v-model="sectorEnd"
+          use-input
+          clearable
+          input-debounce="0"
+          @filter="filterSectorsEnd"
+          :options="filteredSectorsEnd"
+          behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'"
+          label="Destination Sector"
+        />
+        <q-select
+          v-if="sectorEnd"
+          outlined
+          v-model="systemEnd"
+          use-input
+          clearable
+          input-debounce="0"
+          @filter="filterSystemsEnd"
+          :options="filteredSystemsEnd"
+          behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'"
+          label="Destination System"
+        />
         <q-input
           outlined
           v-model="startByDate"
@@ -146,6 +192,8 @@ import { mapGetters } from 'vuex'
 import {
   CREATE_MISSION_ACTION,
   BOARDS_FOR_SELECT_GETTER,
+  SECTORS_FOR_SELECT_GETTER,
+  SECTOR_SYSTEMS_FOR_SELECT_GETTER,
   MISSION_TYPES_FOR_SELECT_GETTER
 } from '../store'
 
@@ -159,20 +207,64 @@ export default {
       audience: 'Public',
       audienceOptions: ['Public', 'Private'],
       board: null,
+      sector: null,
+      system: null,
+      sectorEnd: null,
+      systemEnd: null,
       startByDate: null,
       completeByDate: null,
       anonymous: false,
       autoAccept: false,
       loadingIsVisible: false,
+      filteredSectors: [],
+      filteredSectorsEnd: [],
+      filteredSystems: [],
+      filteredSystemsEnd: [],
     }
   },
   computed: {
     ...mapGetters([
       MISSION_TYPES_FOR_SELECT_GETTER,
       BOARDS_FOR_SELECT_GETTER,
+      SECTORS_FOR_SELECT_GETTER,
+      SECTOR_SYSTEMS_FOR_SELECT_GETTER,
     ])
   },
   methods: {
+    filterSectors(val, update) {
+      const filteredSectors = this.filterList(val, SECTORS_FOR_SELECT_GETTER)
+      update(() => {
+        Vue.set(this, 'filteredSectors', filteredSectors)
+      })
+    },
+    filterSystems(val, update) {
+      const filteredSystems = this.filterList(val, SECTOR_SYSTEMS_FOR_SELECT_GETTER, this.sector.value)
+      update(() => {
+        Vue.set(this, 'filteredSystems', filteredSystems)
+      })
+    },
+    filterSectorsEnd(val, update) {
+      const filteredSectors = this.filterList(val, SECTORS_FOR_SELECT_GETTER)
+      update(() => {
+        Vue.set(this, 'filteredSectorsEnd', filteredSectors)
+      })
+    },
+    filterSystemsEnd(val, update) {
+      const filteredSystems = this.filterList(val, SECTOR_SYSTEMS_FOR_SELECT_GETTER, this.sectorEnd.value)
+      update(() => {
+        Vue.set(this, 'filteredSystemsEnd', filteredSystems)
+      })
+    },
+    filterList(val, getter, resourceUid) {
+      const keyword = val.toLowerCase()
+      let items = []
+      if (resourceUid) {
+        items = this[getter](resourceUid)
+      } else {
+        items = this[getter]
+      }
+      return items.filter(s => s.label.toLowerCase().indexOf(keyword) > -1)
+    },
     async onSubmit () {
       this.loadingIsVisible = true
       await this.$store.dispatch(CREATE_MISSION_ACTION, {
@@ -186,6 +278,10 @@ export default {
           anonymous: this.anonymous,
           autoAccept: this.autoAccept,
           originBoard: null,
+          startingSector: this.sector.value ? this.sector.value : '',
+          startingSystem: this.system.value ? this.system.value : '',
+          endingSector: this.sectorEnd.value ? this.sectorEnd.value : '',
+          endingSystem: this.systemEnd.value ? this.systemEnd.value : '',
         },
         closePopupElement: this.$refs.closeButton.$el,
       })
@@ -201,7 +297,11 @@ export default {
       Vue.set(this, 'anonymous', false)
       Vue.set(this, 'autoAccept', false)
     }
-  }
+  },
+  created() {
+    Vue.set(this, 'filteredSectors', this[SECTORS_FOR_SELECT_GETTER])
+    Vue.set(this, 'filteredSectorsEnd', this[SECTORS_FOR_SELECT_GETTER])
+  },
 }
 </script>
 

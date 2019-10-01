@@ -23,3 +23,7 @@ export const genericSuccess = (message) => {
     ]
   })
 }
+
+export const sortArrayByObjectProperty = (array, objectProperty) => {
+  return [ ...array.sort((a, b) => (a[objectProperty] > b[objectProperty]) ? 1 : -1) ]
+}
