@@ -18,6 +18,7 @@ const initialState = () => {
   }
 }
 
+export const START_ADMIN_TASK_ACTION = 'START_ADMIN_TASK_ACTION'
 export const GET_INITIAL_APP_DATA = 'GET_INITIAL_APP_DATA'
 export const GET_PROFILE_ACTION = 'GET_PROFILE_ACTION'
 export const GET_USERS_ACTION = 'GET_USERS_ACTION'
@@ -41,6 +42,10 @@ export const BOARDS_FOR_SELECT_GETTER = 'BOARDS_FOR_SELECT_GETTER'
 export default new Vuex.Store({
   state: initialState(),
   actions: {
+    async [START_ADMIN_TASK_ACTION]({ commit }, task) {
+      await Vue.prototype.$axios.post(apiUrl + 'tasks', { task })
+      genericSuccess('Admin task completed without error.')
+    },
     async [GET_INITIAL_APP_DATA]({ commit }) {
       const profile = Vue.prototype.$axios.get(apiUrl + 'users/me')
       const users = Vue.prototype.$axios.get(apiUrl + 'users')

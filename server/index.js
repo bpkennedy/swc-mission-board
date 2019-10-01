@@ -11,6 +11,7 @@ import bodyParser from 'body-parser'
 import { corsHeaders, bodyLimit, port } from './configuration'
 import { initializeDb } from './db'
 import { createApiRoutes } from './api'
+require('events').EventEmitter.prototype._maxListeners = 30
 const app = express()
 
 app.server = http.createServer(app)

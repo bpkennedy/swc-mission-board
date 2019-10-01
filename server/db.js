@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin'
 import { stripAnonymousMissions } from './lib/util'
 
-
+export let systems = []
 let db = null
 
 const newDocRef = async (collection) => {
@@ -12,7 +12,7 @@ function iterateSnapshotForItems(snapshot) {
   if (snapshot.empty) {
     return []
   }
-  
+
   const items = []
   for (let p=0;p < snapshot.docs.length; p++) {
     items.push(snapshot.docs[p].data())
@@ -97,6 +97,10 @@ export const createMultiple = async (refSetArray) => {
   })
 }
 
+async function loadSystems() {
+  systems = await getAll({ collection: 'systems' })
+}
+
 export const initializeDb = (callback) => {
   if (process.env.HEROKU === 'true' || process.env.TRAVIS === 'true') {
     admin.initializeApp({
@@ -114,5 +118,6 @@ export const initializeDb = (callback) => {
     }) 
   }
   db = admin.firestore()
+  loadSystems()
   callback(db)
 }
