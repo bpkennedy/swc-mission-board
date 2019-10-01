@@ -49,6 +49,13 @@
           label="Mission Type"
           hint="The type of Mission"
         />
+        <q-input
+          outlined
+          v-model.number="pay"
+          type="number"
+          label="Mission Complete By Date"
+          hint="Ex. Y 20 D 315"
+        />
         <q-select
           outlined
           v-model="audience"
@@ -204,6 +211,7 @@ export default {
       title: null,
       description: null,
       missionType: null,
+      pay: null,
       audience: 'Public',
       audienceOptions: ['Public', 'Private'],
       board: null,

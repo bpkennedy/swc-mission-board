@@ -27,9 +27,15 @@
       <q-item-label>{{ mission.title }}</q-item-label>
       <q-item-label
         caption
-        lines="2"
+        lines="1"
       >
-        {{ mission.description }}
+        {{ this.missionType(mission.mission_type_id) }} due on {{ mission.complete_by_date }}
+      </q-item-label>
+      <q-item-label
+        caption
+        lines="1"
+      >
+        {{ mission.starting_system_name }} to {{ mission.ending_system_name }}
       </q-item-label>
     </q-item-section>
 
@@ -37,7 +43,7 @@
       side
       top
     >
-      <q-badge :label="this.missionType(mission.mission_type_id)" />
+      <q-badge :label="this.missionPayString(mission.pay)" />
     </q-item-section>
   </q-item>
 </template>
@@ -55,6 +61,9 @@ export default {
     }
   },
   methods: {
+    missionPayString(pay) {
+      return `$${pay}`
+    },
     missionType(typeId) {
       return this.$store.state.missionTypes.find(type => type.uid === typeId).name
     },

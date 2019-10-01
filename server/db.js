@@ -8,6 +8,19 @@ const newDocRef = async (collection) => {
   return await db.collection(collection).doc()
 }
 
+export const hydratedSystemMissions = (missions) => {
+  return missions.map(mission => {
+    let hydratedMission = { ...mission }
+    if (mission.starting_system) {
+      hydratedMission = { ...hydratedMission, starting_system_name: systems.find(s => s.uid === mission.starting_system).name }
+    }
+    if (mission.ending_system) {
+      hydratedMission = { ...hydratedMission, ending_system_name: systems.find(s => s.uid === mission.ending_system).name }
+    }
+    return hydratedMission
+  })
+}
+
 function iterateSnapshotForItems(snapshot) {
   if (snapshot.empty) {
     return []

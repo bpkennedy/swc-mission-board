@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getAll, getOne, query, createOne } from '../db'
+import { getAll, getOne, query, createOne, hydratedSystemMissions } from '../db'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
 import { celebrate, Joi } from 'celebrate'
 
@@ -15,6 +15,7 @@ export default () => {
       autoAccept: Joi.boolean().required(),
       anonymous: Joi.boolean().required(),
       missionType: Joi.string().required(),
+      pay: Joi.number().allow(0).required(),
       startByDate: Joi.string().allow('').optional(),
       completeByDate: Joi.string().allow('').optional(),
       description: Joi.string().allow('').optional(),
@@ -31,6 +32,7 @@ export default () => {
       auto_accept: req.body.autoAccept,
       anonymous: req.body.anonymous,
       mission_type_id: req.body.missionType,
+      pay: req.body.pay,
       start_by_date: req.body.startByDate,
       complete_by_date: req.body.completeByDate,
       description: req.body.description,
@@ -58,10 +60,11 @@ export default () => {
       comparison: 'array-contains',
       value: 'public'
     }]
-    res.status(200).send(await query({
+    const publicMissions = await query({
       collection: 'missions',
       querySets: availablePublicMissionsQuery
-    }))
+    })
+    res.status(200).send(hydratedSystemMissions(publicMissions))
   })
   
   api.get('/board/:id', swcAuthenticatedMiddleware, async (req, res) => {
