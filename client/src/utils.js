@@ -27,3 +27,13 @@ export const genericSuccess = (message) => {
 export const sortArrayByObjectProperty = (array, objectProperty) => {
   return [ ...array.sort((a, b) => (a[objectProperty] > b[objectProperty]) ? 1 : -1) ]
 }
+
+export const formatPrice = (value) => {
+  if (isNaN(parseFloat(value))) {
+    return value
+  }
+  const formatter = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 0
+  })
+  return formatter.format(value)
+}
