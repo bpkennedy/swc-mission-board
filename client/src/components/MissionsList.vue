@@ -5,7 +5,10 @@
       :key="mission.uid"
       padding
     >
-      <mission-row :mission="mission" />
+      <mission-row
+        :mission="mission"
+        @click.native="goToMission(mission.uid)"
+      />
     </q-list>
   </div>
 </template>
@@ -25,6 +28,16 @@ export default {
     missions: {
       type: Array,
       required: true
+    }
+  },
+  methods: {
+    goToMission(id) {
+      this.$router.push({
+        name: 'mission',
+        params: {
+          id,
+        },
+      })
     }
   }
 }

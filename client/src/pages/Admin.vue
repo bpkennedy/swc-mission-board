@@ -1,23 +1,16 @@
 <template>
-  <transition
-    appear
-    enter-active-class="animated slideInRight"
-    leave-active-class="animated slideOutLeft"
-    mode="out-in"
-  >
-    <q-page class="flex flex-center">
-      <q-btn
-        @click="doTask('update-systems')"
-        color="primary"
-        :loading="loading"
-        label="Load SWC Systems"
-      >
-        <q-tooltip>
-          Load SWC Systems Data
-        </q-tooltip>
-      </q-btn>
-    </q-page>
-  </transition>
+  <q-page class="flex flex-center">
+    <q-btn
+      @click="doTask('update-systems')"
+      color="primary"
+      :loading="loading"
+      label="Load SWC Systems"
+    >
+      <q-tooltip>
+        Load SWC Systems Data
+      </q-tooltip>
+    </q-btn>
+  </q-page>
 </template>
 
 <style>

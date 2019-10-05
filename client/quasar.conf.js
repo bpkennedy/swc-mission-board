@@ -77,6 +77,7 @@ module.exports = function (ctx) {
       directives: [
         'Ripple',
         'ClosePopup',
+        'GoBack',
       ],
 
       // Quasar plugins
@@ -115,7 +116,10 @@ module.exports = function (ctx) {
 
     // animations: 'all', // --- includes all animations
     animations: [
-      'slideInRight'
+      'slideInRight',
+      'slideInLeft',
+      'slideOutRight',
+      'slideOutLeft',
     ],
 
     ssr: {

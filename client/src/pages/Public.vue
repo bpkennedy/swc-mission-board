@@ -1,14 +1,7 @@
 <template>
-  <transition
-    appear
-    enter-active-class="animated slideInRight"
-    leave-active-class="animated slideOutLeft"
-    mode="out-in"
-  >
-    <q-page class="flex flex-center">
-      <missions-list :missions="publicMissions" />
-    </q-page>
-  </transition>
+  <q-page class="flex flex-center">
+    <missions-list :missions="publicMissions" />
+  </q-page>
 </template>
 
 <style>

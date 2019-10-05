@@ -1,27 +1,20 @@
 <template>
-  <transition
-    appear
-    enter-active-class="animated slideInRight"
-    leave-active-class="animated slideOutLeft"
-    mode="out-in"
+  <q-page
+    class="flex flex-center column"
+    padding
   >
-    <q-page
-      class="flex flex-center column"
-      padding
+    <missions-list :missions="boardMissions" />
+    <q-inner-loading
+      :showing="loadingIsVisible"
+      transition-show="fade"
+      transition-hide="fade"
     >
-      <missions-list :missions="boardMissions" />
-      <q-inner-loading
-        :showing="loadingIsVisible"
-        transition-show="fade"
-        transition-hide="fade"
-      >
-        <q-spinner-pie
-          size="4em"
-          color="primary"
-        />
-      </q-inner-loading>
-    </q-page>
-  </transition>
+      <q-spinner-pie
+        size="4em"
+        color="primary"
+      />
+    </q-inner-loading>
+  </q-page>
 </template>
 
 <style>

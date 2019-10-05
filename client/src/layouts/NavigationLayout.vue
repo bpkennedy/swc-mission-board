@@ -1,11 +1,16 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-page-container>
     <app-header />
-    <q-page-container>
+    <transition
+      appear
+      enter-active-class="animated slideInRight"
+      leave-active-class="animated slideOutLeft"
+      mode="out-in"
+    >
       <router-view />
-    </q-page-container>
+    </transition>
     <app-footer />
-  </q-layout>
+  </q-page-container>
 </template>
 
 <script>
@@ -13,11 +18,11 @@ import AppHeader from '../components/AppHeader.vue'
 import AppFooter from '../components/AppFooter.vue'
 
 export default {
-  name: 'MyLayout',
+  name: 'NavigationLayout',
   components: {
     AppHeader,
     AppFooter,
-  }
+  },
 }
 </script>
 

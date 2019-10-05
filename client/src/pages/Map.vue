@@ -1,25 +1,18 @@
 <template>
-  <transition
-    appear
-    enter-active-class="animated slideInRight"
-    leave-active-class="animated slideOutLeft"
-    mode="out-in"
-  >
-    <q-page class="flex flex-center">
-      <l-map
-        style="height: 100%; width: 100%; position: absolute;"
-        :zoom="2"
-        :max-zoom="4"
-        :min-zoom="0"
-        :center="center"
-      >
-        <l-tile-layer
-          :url="url"
-          :attribution="attribution"
-        />
-      </l-map>
-    </q-page>
-  </transition>
+  <q-page class="flex flex-center">
+    <l-map
+      style="height: 100%; width: 100%; position: absolute;"
+      :zoom="2"
+      :max-zoom="4"
+      :min-zoom="0"
+      :center="center"
+    >
+      <l-tile-layer
+        :url="url"
+        :attribution="attribution"
+      />
+    </l-map>
+  </q-page>
 </template>
 
 <style>
