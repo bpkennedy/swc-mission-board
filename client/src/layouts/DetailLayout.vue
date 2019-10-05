@@ -25,18 +25,12 @@
       </q-toolbar>
     </q-header>
     <router-view />
-    <app-footer />
   </q-page-container>
 </template>
 
 <script>
-import AppFooter from '../components/AppFooter.vue'
-
 export default {
   name: 'NavigationLayout',
-  components: {
-    AppFooter,
-  }
 }
 </script>
 
