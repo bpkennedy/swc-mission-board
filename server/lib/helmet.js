@@ -5,10 +5,7 @@ export const setSecurityConfig = (app) => {
   app.use(helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'none'"],
-      scriptSrc: [
-        "'self'",
-        "https://storage.googleapis.com"
-      ],
+      scriptSrc: ["'self'", "https://storage.googleapis.com"],
       connectSrc: ["'self'"],
       objectSrc: ["'self'"],
       imgSrc: ["*", "data:", "blob:"],

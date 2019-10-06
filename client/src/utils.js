@@ -39,6 +39,5 @@ export const formatPrice = (value) => {
 }
 
 export const xy = function(x, y) {
-  console.log([x, y])
-  return [x, y]
+  return [y, x]
 }

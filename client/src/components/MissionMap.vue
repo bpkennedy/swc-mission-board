@@ -33,6 +33,16 @@ import { LMap, LTileLayer, LMarker, LPolyline, LPopup } from 'vue2-leaflet'
 import { fqdn } from '../store'
 import { xy } from '../utils'
 
+L.CRS.SwcSystem = L.extend({}, L.CRS.Simple, {
+  // We are at Zoom level 0
+  // Tile size from my tilecutter script in photoshop produces 256x256px, and these should
+  // represent the entire "world" of size 1000x1000 (even though the photoshop image I cut from was 4096x4096, the scale of the original swc map is 1000x1000), therefore:
+  // Scale is 1000 / 256 = 3.90625 (use the reverse in transformation 1/3.90625)
+  // We want the center of tile 0/0/0 to be coordinates [0, 0], therefore:
+  // Offset is 1000 * 1/3.90625 / 2 = 128
+  transformation: new L.Transformation(1 / 3.90625, 128, -1 / 3.90625, 128)
+})
+
 export default {
   name: 'MissionMap',
   components: {
@@ -65,7 +75,7 @@ export default {
       center: [0, 0],
       url: fqdn + '/map/{z}/{x}/{y}.png',
       attribution: '',
-      crs: L.CRS.Simple,
+      crs: L.CRS.SwcSystem,
       icon: L.icon({
         iconUrl: fqdn + '/map/mapMarker.png',
         iconSize: [32, 37],
