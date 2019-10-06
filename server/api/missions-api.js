@@ -1,7 +1,34 @@
 import { Router } from 'express'
-import { getAll, getOne, query, createOne, hydratedSystemMissions } from '../db'
+import { getAll, getOne, query, createOne, systems } from '../db'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
 import { celebrate, Joi } from 'celebrate'
+
+function addMapCoordinatesToMission(mission) {
+  const startingSystem = systems.find(s => s.uid === mission.starting_system)
+  const endingSystem = systems.find(s => s.uid === mission.ending_system)
+  return {
+    ...mission,
+    startingSystemName: startingSystem ? startingSystem.name : null,
+    endingSystemName: endingSystem ? endingSystem.name : null,
+    startingX: startingSystem ? startingSystem.x : null,
+    startingY: startingSystem ? startingSystem.y : null,
+    endingX: endingSystem ? endingSystem.x : null,
+    endingY: endingSystem ? endingSystem.y : null,
+  }
+}
+
+function hydratedSystemMissions (missions) {
+  return missions.map(mission => {
+    let hydratedMission = { ...mission }
+    if (mission.starting_system) {
+      hydratedMission = { ...hydratedMission, starting_system_name: systems.find(s => s.uid === mission.starting_system).name }
+    }
+    if (mission.ending_system) {
+      hydratedMission = { ...hydratedMission, ending_system_name: systems.find(s => s.uid === mission.ending_system).name }
+    }
+    return hydratedMission
+  })
+}
 
 export default () => {
   let api = Router()
@@ -87,7 +114,7 @@ export default () => {
   api.get('/:id', swcAuthenticatedMiddleware, async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
     if (mission) {
-      res.status(200).send(mission)
+      res.status(200).send(addMapCoordinatesToMission(mission))
     } else {
       res.status(404).send('Not found.')
     }

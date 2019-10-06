@@ -5,22 +5,36 @@
     :crs="crs"
     :max-zoom="4"
     :min-zoom="0"
+    :bounds="locationBounds"
   >
     <l-tile-layer
       :url="url"
       :attribution="attribution"
     />
     <l-marker
+      v-if="startingX && startingY"
       :lat-lng="xy(startingX, startingY)"
       :icon="icon"
-    />
+    >
+      <l-popup>
+        <div>Starting: <b>{{ startingSystemName }}</b></div>
+        <div>{{ startingX + ',' + startingY }}</div>
+      </l-popup>
+    </l-marker>
     <l-marker
+      v-if="endingX && endingY"
       :lat-lng="xy(endingX,endingY)"
       :icon="icon"
     >
-      <l-popup :content="'Test Name'" />
+      <l-popup>
+        <div>Destination: <b>{{ endingSystemName }}</b></div>
+        <div>{{ endingX + ',' + endingY }}</div>
+      </l-popup>
     </l-marker>
-    <l-polyline :lat-lngs="[xy(startingX, startingY), xy(endingX, endingY)]" />
+    <l-polyline
+      v-if="startingX && startingY && endingX && endingY"
+      :lat-lngs="[xy(startingX, startingY), xy(endingX, endingY)]"
+    />
   </l-map>
 </template>
 
@@ -69,6 +83,14 @@ export default {
       type: Number,
       required: true
     },
+    startingSystemName: {
+      type: String,
+      required: true,
+    },
+    endingSystemName: {
+      type: String,
+      required: true,
+    }
   },
   data() {
     return {
@@ -81,6 +103,16 @@ export default {
         iconSize: [32, 37],
         iconAnchor: [16, 37]
       }),
+    }
+  },
+  computed: {
+    locationBounds() {
+      if (this.startingX && this.startingY && this.endingX && this.endingY) {
+        return [xy(this.startingX, this.startingY), xy(this.endingX, this.endingY)]
+      } else if (this.startingX && this.startingY) {
+        return [xy(this.startingX, this.startingY)]
+      }
+      return [xy(this.endingX, this.endingY)]
     }
   },
   methods: {

@@ -4,10 +4,13 @@
     padding
   >
     <mission-map
-      :starting-x="-168"
-      :starting-y="-255"
-      :ending-x="0"
-      :ending-y="0"
+      v-if="!loadingIsVisible && hasLocationData"
+      :starting-x="mission.startingX"
+      :starting-y="mission.startingY"
+      :ending-x="mission.endingX"
+      :ending-y="mission.endingY"
+      :starting-system-name="mission.startingSystemName"
+      :ending-system-name="mission.endingSystemName"
     />
     <div v-if="!loadingIsVisible">
       {{ mission.description }}
@@ -47,6 +50,9 @@ export default {
     ...mapState([
       'mission'
     ]),
+    hasLocationData() {
+      return this.mission.startingSystemName || this.mission.endingSystemName
+    },
   },
   async mounted() {
     await this.$store.dispatch(GET_MISSION_ACTION, this.$route.params.id)

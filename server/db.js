@@ -1,23 +1,22 @@
 import * as admin from 'firebase-admin'
-import { stripAnonymousMissions } from './lib/util'
 
-let systems = []
+export let systems = []
 let db = null
 
-const newDocRef = async (collection) => {
+async function generateNewDocRef (collection) {
   return await db.collection(collection).doc()
 }
 
-export const hydratedSystemMissions = (missions) => {
+async function loadSystems() {
+  systems = await getAll({ collection: 'systems' })
+}
+
+function stripAnonymousMissions (missions) {
   return missions.map(mission => {
-    let hydratedMission = { ...mission }
-    if (mission.starting_system) {
-      hydratedMission = { ...hydratedMission, starting_system_name: systems.find(s => s.uid === mission.starting_system).name }
+    if (mission.anonymous === true) {
+      return { ...mission, created_by: null }
     }
-    if (mission.ending_system) {
-      hydratedMission = { ...hydratedMission, ending_system_name: systems.find(s => s.uid === mission.ending_system).name }
-    }
-    return hydratedMission
+    return mission
   })
 }
 
@@ -85,7 +84,7 @@ export const createOne = async ({ collection, updateSet, id }) => {
   if (id) {
     uid = id
   } else {
-    const newRef = await newDocRef(collection)
+    const newRef = await generateNewDocRef(collection)
     uid = newRef.id
   }
   await db.collection(collection).doc(uid).set({
@@ -100,7 +99,7 @@ export const createOne = async ({ collection, updateSet, id }) => {
 export const createMultiple = async (refSetArray) => {
   return db.runTransaction(async t => {
     for (const refSet of refSetArray) {
-      const newRef = await newDocRef(refSet.collection)
+      const newRef = await generateNewDocRef(refSet.collection)
       const uid = newRef.id
       await t.doc(uid).set({
         uid,
@@ -108,14 +107,6 @@ export const createMultiple = async (refSetArray) => {
       })
     }
   })
-}
-
-export const getSystems = () => {
-  return systems
-}
-
-async function loadSystems() {
-  systems = await getAll({ collection: 'systems' })
 }
 
 export const initializeDb = (callback) => {
