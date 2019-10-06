@@ -37,3 +37,8 @@ export const formatPrice = (value) => {
   })
   return formatter.format(value)
 }
+
+export const xy = function(x, y) {
+  console.log([x, y])
+  return [x, y]
+}

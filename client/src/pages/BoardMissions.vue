@@ -32,16 +32,13 @@ export default {
   },
   data() {
     return {
-      loadingIsVisible: false,
+      loadingIsVisible: true,
     }
   },
   computed: {
     ...mapState([
       'boardMissions'
     ]),
-  },
-  beforeCreate() {
-    this.loadingIsVisible = true
   },
   async mounted() {
     await this.$store.dispatch(GET_BOARD_MISSIONS_ACTION, {

@@ -19,7 +19,7 @@
           <q-item-label
             lines="1"
           >
-            TestName
+            {{ mission.title }}
           </q-item-label>
         </q-item-section>
       </q-toolbar>
@@ -29,8 +29,15 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'NavigationLayout',
+  computed: {
+    ...mapState([
+      'mission'
+    ]),
+  },
 }
 </script>
 

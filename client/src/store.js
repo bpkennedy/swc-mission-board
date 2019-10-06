@@ -16,6 +16,7 @@ const initialState = () => {
     sectors: [],
     boardMissions: [],
     missionTypes: [],
+    mission: {},
   }
 }
 
@@ -27,6 +28,7 @@ export const GET_PROFILE_ACTION = 'GET_PROFILE_ACTION'
 export const GET_USERS_ACTION = 'GET_USERS_ACTION'
 export const GET_PUBLIC_MISSIONS_ACTION = 'GET_MISSIONS_ACTION'
 export const GET_BOARD_MISSIONS_ACTION = 'GET_BOARD_MISSIONS_ACTION'
+export const GET_MISSION_ACTION = 'GET_MISSION_ACTION'
 export const GET_MISSION_TYPES_ACTION = 'GET_MISSION_TYPES_ACTION'
 export const CREATE_MISSION_ACTION = 'CREATE_MISSION_ACTION'
 
@@ -34,6 +36,7 @@ const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
 const SET_USERS_MUTATION = 'SET_USERS_MUTATION'
 const SET_PUBLIC_MISSIONS_MUTATION = 'SET_MISSIONS_MUTATION'
 const SET_BOARD_MISSIONS_MUTATION = 'SET_BOARD_MISSIONS_MUTATION'
+const SET_MISSION_MUTATION = 'SET_MISSION_MUTATION'
 const SET_BOARDS_MUTATION = 'SET_BOARDS_MUTATION'
 const SET_SECTORS_MUTATION = 'SET_SECTORS_MUTATION'
 const SET_MISSION_TYPES_MUTATION = 'SET_MISSION_TYPES_MUTATION'
@@ -98,6 +101,10 @@ export default new Vuex.Store({
         }
       }
     },
+    async [GET_MISSION_ACTION]({ commit }, missionId) {
+      const { data } = await Vue.prototype.$axios.get(apiUrl + 'missions/' + missionId)
+      commit(SET_MISSION_MUTATION, data)
+    },
     async [GET_MISSION_TYPES_ACTION]({ commit }) {
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'mission-types')
       commit(SET_MISSION_TYPES_MUTATION, data)
@@ -125,6 +132,9 @@ export default new Vuex.Store({
     },
     [SET_BOARD_MISSIONS_MUTATION](state, boardMissions) {
       Vue.set(state, 'boardMissions', [ ...boardMissions ])
+    },
+    [SET_MISSION_MUTATION](state, mission) {
+      Vue.set(state, 'mission', { ...mission })
     },
     [SET_BOARDS_MUTATION](state, boards) {
       Vue.set(state, 'boards', [ ...boards ])
