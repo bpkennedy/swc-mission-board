@@ -1,16 +1,19 @@
 <template>
-  <div v-if="missions.length > 0">
-    <q-list
-      v-for="mission of missions"
-      :key="mission.uid"
-      padding
+  <q-list
+    padding
+  >
+    <q-scroll-area
+      v-if="missions.length > 0"
+      style="height: 100%;"
     >
       <mission-row
+        v-for="mission of missions"
+        :key="mission.uid"
         :mission="mission"
         @click.native="goToMission(mission.uid)"
       />
-    </q-list>
-  </div>
+    </q-scroll-area>
+  </q-list>
 </template>
 
 <style>

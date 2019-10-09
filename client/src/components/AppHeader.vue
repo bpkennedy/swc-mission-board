@@ -1,6 +1,16 @@
 <template>
   <q-header elevated>
     <q-toolbar>
+      <q-avatar
+        v-if="$route.name === 'boardMissions'"
+        rounded
+      >
+        <q-img
+          :src="CURRENT_BOARD_IMAGE_URL($route.params.id)"
+          spinner-color="white"
+          style="height: 100%; max-width: 100%"
+        />
+      </q-avatar>
       <q-toolbar-title>
         {{ getPageTitle }}
       </q-toolbar-title>
@@ -35,6 +45,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { CURRENT_BOARD_IMAGE_URL } from '../store'
 import TabNav from './TabNav.vue'
 import NewMission from './NewMission.vue'
 
@@ -50,6 +62,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      CURRENT_BOARD_IMAGE_URL,
+    ]),
     currentUserPhotoUrl() {
       return this.$store.state.user.image ? this.$store.state.user.image : ''
     },

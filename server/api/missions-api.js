@@ -91,7 +91,7 @@ export default () => {
       collection: 'missions',
       querySets: availablePublicMissionsQuery
     })
-    res.status(200).send(hydratedSystemMissions(publicMissions))
+    res.status(200).send(hydratedSystemMissions(publicMissions).map(addMapCoordinatesToMission))
   })
   
   api.get('/board/:id', swcAuthenticatedMiddleware, async (req, res) => {
@@ -102,10 +102,11 @@ export default () => {
         comparison: 'array-contains',
         value: req.params.id
       }]
-      res.status(200).send(await query({
+      const boardMissions = await query({
         collection: 'missions',
         querySets: BoardMissionsQuery
-      }))
+      })
+      res.status(200).send(hydratedSystemMissions(boardMissions).map(addMapCoordinatesToMission))
     } else {
       res.status(403).send({ message: 'Forbidden' })
     }

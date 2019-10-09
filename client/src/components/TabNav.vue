@@ -27,14 +27,6 @@
     >
       My Missions
     </q-route-tab>
-    <q-route-tab
-      icon="map"
-      to="/map"
-      exact
-      aria-label="Galaxy Map Navigation"
-    >
-      Galaxy Map
-    </q-route-tab>
   </q-tabs>
 </template>
 

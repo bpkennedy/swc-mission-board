@@ -62,6 +62,7 @@ module.exports = function (ctx) {
         'QPage',
         'QPageContainer',
         'QRouteTab',
+        'QScrollArea',
         'QSelect',
         'QSpace',
         'QSpinnerPie',

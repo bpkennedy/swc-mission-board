@@ -3,7 +3,7 @@
     class="flex flex-center column"
     padding
   >
-    <mission-map
+    <single-mission-map
       v-if="!loadingIsVisible && hasLocationData"
       :starting-x="mission.startingX"
       :starting-y="mission.startingY"
@@ -34,12 +34,12 @@
 <script>
 import { mapState } from 'vuex'
 import { GET_MISSION_ACTION } from '../store'
-import MissionMap from '../components/MissionMap.vue'
+import SingleMissionMap from '../components/SingleMissionMap.vue'
 
 export default {
   name: 'Mission',
   components: {
-    MissionMap,
+    SingleMissionMap,
   },
   data() {
     return {

@@ -12,11 +12,11 @@ const initialState = () => {
     user: {},
     users: [],
     missions: [],
+    mission: {},
     boards: [],
     sectors: [],
     boardMissions: [],
     missionTypes: [],
-    mission: {},
   }
 }
 
@@ -47,6 +47,7 @@ export const MISSION_TYPES_FOR_SELECT_GETTER = 'MISSION_TYPES_FOR_SELECT_GETTER'
 export const BOARDS_FOR_SELECT_GETTER = 'BOARDS_FOR_SELECT_GETTER'
 export const SECTORS_FOR_SELECT_GETTER = 'SECTORS_FOR_SELECT_GETTER'
 export const SECTOR_SYSTEMS_FOR_SELECT_GETTER = 'SECTOR_SYSTEMS_FOR_SELECT_GETTER'
+export const CURRENT_BOARD_IMAGE_URL = 'CURRENT_BOARD_IMAGE_URL'
 
 export default new Vuex.Store({
   state: initialState(),
@@ -170,6 +171,9 @@ export default new Vuex.Store({
         label: board.name,
         value: board.uid,
       })).filter(b => b.label.toLowerCase() !== 'public')
+    },
+    [CURRENT_BOARD_IMAGE_URL]: state => boardUid => {
+      return state.boards.filter(board => board.uid === boardUid).map(board => board.image)
     },
     [SECTORS_FOR_SELECT_GETTER]: state => {
       const unsortedSectors = state.sectors.map(sector => ({

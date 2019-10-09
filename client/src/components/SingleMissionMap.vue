@@ -58,7 +58,7 @@ L.CRS.SwcSystem = L.extend({}, L.CRS.Simple, {
 })
 
 export default {
-  name: 'MissionMap',
+  name: 'SingleMissionMap',
   components: {
     LMap,
     LTileLayer,

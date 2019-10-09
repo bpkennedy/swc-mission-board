@@ -62,23 +62,6 @@ const routes = [
     ],
   },
   {
-    path: '/map',
-    component: () => import('layouts/RootLayout.vue'),
-    children: [
-      {
-        path: '',
-        component: () => import('layouts/NavigationLayout.vue'),
-        children: [
-          {
-            name: 'Galaxy Map',
-            path: '',
-            component: () => import('pages/Map.vue')
-          }
-        ]
-      }
-    ],
-  },
-  {
     path: '/boards',
     component: () => import('layouts/RootLayout.vue'),
     children: [
