@@ -3,7 +3,7 @@
     style=""
     :zoom="2"
     :crs="crs"
-    :max-zoom="4"
+    :max-zoom="5"
     :min-zoom="0"
   >
     <l-tile-layer
