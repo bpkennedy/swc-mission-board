@@ -1,4 +1,21 @@
+import { Promise } from 'es6-promise'
+import fs from 'fs'
 import * as admin from 'firebase-admin'
+import Papa from 'papaparse'
+// const createCsvWriter = require('csv-writer').createObjectCsvWriter
+// const csvWriter = createCsvWriter({
+//   path: './dev-data/systems.csv',
+//   header: [
+//       {id: 'uid', title: 'uid'},
+//       {id: 'name', title: 'name'},
+//       {id: 'controlled_by', title: 'controlled_by'},
+//       {id: 'x', title: 'x'},
+//       {id: 'y', title: 'y'},
+//       {id: 'created_at', title: 'created_at'},
+//       {id: 'modified_at', title: 'modified_at'}
+//   ]
+// })
+
 
 export let systems = []
 let db = null
@@ -7,8 +24,35 @@ async function generateNewDocRef (collection) {
   return await db.collection(collection).doc()
 }
 
+// async function createCSVForSystems() {
+//   await csvWriter.writeRecords(systems.map(s => ({
+//     ...s,
+//     created_at: s.created_at.toDate(),
+//     modified_at: s.modified_at.toDate(),
+//   })))
+// }
+
+async function loadLocalSystems() {
+  const file = fs.createReadStream('./dev-data/systems.csv');
+  return new Promise(resolve => {
+    Papa.parse(file, {
+      header: true,
+      dynamicTyping: true,
+      complete: results => {
+        resolve(results.data);
+      }
+    })
+  })
+}
+
 async function loadSystems() {
-  systems = await getAll({ collection: 'systems' })
+  // systems = await getAll({ collection: 'systems' })
+  // await createCSVForSystems()
+  if (process.env.TRAVIS || process.env.HEROKU) {
+    systems = await getAll({ collection: 'systems' })
+  } else {
+    systems = await loadLocalSystems()
+  }
 }
 
 function stripAnonymousMissions (missions) {

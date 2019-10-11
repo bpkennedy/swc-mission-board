@@ -63,6 +63,7 @@ module.exports = function (ctx) {
         'QPageContainer',
         'QRouteTab',
         'QScrollArea',
+        'QSeparator',
         'QSelect',
         'QSpace',
         'QSpinnerPie',
@@ -77,8 +78,7 @@ module.exports = function (ctx) {
 
       directives: [
         'Ripple',
-        'ClosePopup',
-        'GoBack',
+        'ClosePopup'
       ],
 
       // Quasar plugins

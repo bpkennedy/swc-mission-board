@@ -6,7 +6,7 @@
     >
       <q-toolbar>
         <q-btn
-          v-go-back="'/public'"
+          @click="$router.go(-1)"
           flat
           dense
           class="q-mr-sm"
@@ -15,11 +15,11 @@
           Back
         </q-btn>
 
-        <q-item-section>
+        <q-item-section class="text-center">
           <q-item-label
             lines="1"
           >
-            {{ mission.title }}
+            Mission Summary
           </q-item-label>
         </q-item-section>
       </q-toolbar>
@@ -29,15 +29,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   name: 'NavigationLayout',
-  computed: {
-    ...mapState([
-      'mission'
-    ]),
-  },
 }
 </script>
 

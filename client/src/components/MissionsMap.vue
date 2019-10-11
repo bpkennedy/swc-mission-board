@@ -1,6 +1,5 @@
 <template>
   <l-map
-    style=""
     :zoom="2"
     :crs="crs"
     :max-zoom="5"

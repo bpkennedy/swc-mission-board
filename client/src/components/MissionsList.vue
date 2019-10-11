@@ -1,7 +1,5 @@
 <template>
-  <q-list
-    padding
-  >
+  <q-list>
     <q-scroll-area
       v-if="missions.length > 0"
       style="height: 100%;"

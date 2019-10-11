@@ -1,54 +1,56 @@
 <template>
-  <q-card class="my-card">
-    <q-item>
-      <q-item-section avatar>
-        <q-avatar
-          v-if="mission.created_by === null"
-          color="primary"
-          text-color="white"
-          icon="face"
-        >
-          <q-tooltip>Anonymous Public Mission</q-tooltip>
-        </q-avatar>
-        <q-avatar
-          v-else
-          rounded
-        >
-          <img :src="getMissionImageFromUid(mission)">
-          <q-tooltip>
-            Public Mission by {{ getMissionNameFromUid(mission) }}
-          </q-tooltip>
-        </q-avatar>
-      </q-item-section>
-
-      <q-item-section>
-        <q-item-label>{{ mission.title }}</q-item-label>
-        <q-item-label
-          caption
-          lines="1"
-        >
-          {{ this.missionType(mission.mission_type_id) }} due on {{ mission.complete_by_date }}
-        </q-item-label>
-        <q-item-label
-          caption
-          lines="1"
-        >
-          {{ mission.starting_system_name }} to {{ mission.ending_system_name }}
-        </q-item-label>
-      </q-item-section>
-
-      <q-item-section
-        side
-        top
-        class="row justify-center"
+  <q-item
+    bordered
+    clickable
+    v-ripple
+  >
+    <q-item-section avatar>
+      <q-avatar
+        v-if="mission.created_by === null"
+        color="primary"
+        text-color="white"
+        icon="face"
       >
-        <q-badge
-          :label="formatPrice(mission.pay)"
-          class="text-h6"
-        />
-      </q-item-section>
-    </q-item>
-  </q-card>
+        <q-tooltip>Anonymous Public Mission</q-tooltip>
+      </q-avatar>
+      <q-avatar
+        v-else
+        rounded
+      >
+        <img :src="getMissionImageFromUid(mission)">
+        <q-tooltip>
+          Public Mission by {{ getMissionNameFromUid(mission) }}
+        </q-tooltip>
+      </q-avatar>
+    </q-item-section>
+
+    <q-item-section>
+      <q-item-label>{{ mission.title }}</q-item-label>
+      <q-item-label
+        caption
+        lines="1"
+      >
+        {{ this.missionType(mission.mission_type_id) }} due on {{ mission.complete_by_date }}
+      </q-item-label>
+      <q-item-label
+        caption
+        lines="1"
+      >
+        {{ mission.starting_system_name }} to {{ mission.ending_system_name }}
+      </q-item-label>
+    </q-item-section>
+
+    <q-item-section
+      side
+      top
+      class="row justify-center"
+    >
+      <q-badge
+        :label="formatPrice(mission.pay)"
+        class="text-h6"
+      />
+    </q-item-section>
+  </q-item>
 </template>
 
 <style>

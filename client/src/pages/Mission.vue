@@ -1,8 +1,10 @@
 <template>
-  <q-page
-    class="flex flex-center column"
-    padding
-  >
+  <q-page class="row">
+    <mission-summary
+      v-if="!loadingIsVisible"
+      :mission="mission"
+      class="col"
+    />
     <single-mission-map
       v-if="!loadingIsVisible && hasLocationData"
       :starting-x="mission.startingX"
@@ -11,10 +13,13 @@
       :ending-y="mission.endingY"
       :starting-system-name="mission.startingSystemName"
       :ending-system-name="mission.endingSystemName"
+      class="col-xs-4 col-sm-4 col-md-6 col-lg-8 col-xl-8"
     />
-    <div v-if="!loadingIsVisible">
-      {{ mission.description }}
-    </div>
+    <mission-metadata
+      v-if="!loadingIsVisible"
+      :mission="mission"
+      class="col"
+    />
     <q-inner-loading
       :showing="loadingIsVisible"
       transition-show="fade"
@@ -35,11 +40,15 @@
 import { mapState } from 'vuex'
 import { GET_MISSION_ACTION } from '../store'
 import SingleMissionMap from '../components/SingleMissionMap.vue'
+import MissionSummary from '../components/MissionSummary.vue'
+import MissionMetadata from '../components/MissionMetadata.vue'
 
 export default {
   name: 'Mission',
   components: {
     SingleMissionMap,
+    MissionSummary,
+    MissionMetadata,
   },
   data() {
     return {
