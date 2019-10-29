@@ -61,6 +61,7 @@ module.exports = function (ctx) {
         'QLayout',
         'QPage',
         'QPageContainer',
+        'QPopupProxy',
         'QRouteTab',
         'QScrollArea',
         'QSeparator',

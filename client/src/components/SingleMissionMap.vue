@@ -13,7 +13,7 @@
     <l-marker
       v-if="startingX && startingY"
       :lat-lng="xy(startingX, startingY)"
-      :icon="icon"
+      :icon="iconStart"
     >
       <l-popup>
         <div>Starting: <b>{{ startingSystemName }}</b></div>
@@ -23,7 +23,7 @@
     <l-marker
       v-if="endingX && endingY"
       :lat-lng="xy(endingX,endingY)"
-      :icon="icon"
+      :icon="iconEnd"
     >
       <l-popup>
         <div>Destination: <b>{{ endingSystemName }}</b></div>
@@ -44,7 +44,7 @@
 import L from 'leaflet'
 import { LMap, LTileLayer, LMarker, LPolyline, LPopup } from 'vue2-leaflet'
 import { fqdn } from '../store'
-import { xy } from '../utils'
+import { xy, startIcon, endIcon } from '../utils'
 
 L.CRS.SwcSystem = L.extend({}, L.CRS.Simple, {
   // We are at Zoom level 0
@@ -97,8 +97,13 @@ export default {
       url: fqdn + '/map/{z}/{x}/{y}.png',
       attribution: '',
       crs: L.CRS.SwcSystem,
-      icon: L.icon({
-        iconUrl: fqdn + '/map/mapMarker.png',
+      iconStart: L.icon({
+        iconUrl: 'data:image/svg+xml;base64,' + btoa(startIcon),
+        iconSize: [32, 37],
+        iconAnchor: [16, 37]
+      }),
+      iconEnd: L.icon({
+        iconUrl: 'data:image/svg+xml;base64,' + btoa(endIcon),
         iconSize: [32, 37],
         iconAnchor: [16, 37]
       }),

@@ -1,14 +1,10 @@
 <template>
-  <q-list v-if="display === 'column'">
+  <q-list
+    v-if="display === 'column'"
+    bordered
+    class="no-top-border"
+  >
     <q-scroll-area style="height: 100%;">
-      <q-item>
-        <q-item-section>
-          <q-item-label>Title</q-item-label>
-          <q-item-label caption>
-            {{ mission.title }}
-          </q-item-label>
-        </q-item-section>
-      </q-item>
       <q-item>
         <q-item-section>
           <q-item-label>Description</q-item-label>
@@ -62,6 +58,35 @@
           </q-item-label>
         </q-item-section>
       </q-item>
+      <q-separator spaced />
+      <q-item-label header>
+        Location
+      </q-item-label>
+      <q-item>
+        <q-item-section>
+          <q-item-label>
+            Starting System
+          </q-item-label>
+          <q-item-label caption>
+            {{ mission.startingSystemName }} ({{ mission.startingX }}, {{ mission.startingY }})
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label>
+            Destination System
+          </q-item-label>
+          <q-item-label caption>
+            {{ mission.endingSystemName }} ({{ mission.endingX }}, {{ mission.endingY }})
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-separator spaced />
+      <created-by
+        :created-by="mission.created_by"
+        :origin-board-id="mission.origin_board_id"
+      />
     </q-scroll-area>
   </q-list>
   <q-card v-else>
@@ -73,8 +98,13 @@
 </style>
 
 <script>
+import CreatedBy from './CreatedBy.vue'
+
 export default {
   name: 'MissionSummary',
+  components: {
+    CreatedBy,
+  },
   props: {
     mission: {
       type: Object,

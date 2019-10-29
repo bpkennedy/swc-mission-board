@@ -120,6 +120,19 @@ export default () => {
       res.status(404).send('Not found.')
     }
   })
+  
+  api.get('/:id/bidders', swcAuthenticatedMiddleware, async (req, res) => {
+    const missionBiddersQuery = [{
+      field: 'mission_id',
+      comparison: '==',
+      value: req.params.id
+    }]
+    const missionBids = await query({
+      collection: 'bids',
+      querySets: missionBiddersQuery
+    })
+    res.status(200).send(missionBids)
+  })
 
 	return api
 }

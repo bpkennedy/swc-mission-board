@@ -11,6 +11,7 @@ const initialState = () => {
   return {
     user: {},
     users: [],
+    bidders: [],
     missions: [],
     mission: {},
     boards: [],
@@ -31,6 +32,7 @@ export const GET_BOARD_MISSIONS_ACTION = 'GET_BOARD_MISSIONS_ACTION'
 export const GET_MISSION_ACTION = 'GET_MISSION_ACTION'
 export const GET_MISSION_TYPES_ACTION = 'GET_MISSION_TYPES_ACTION'
 export const CREATE_MISSION_ACTION = 'CREATE_MISSION_ACTION'
+export const CREATE_BID_ACTION = 'CREATE_BID_ACTION'
 
 const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
 const SET_USERS_MUTATION = 'SET_USERS_MUTATION'
@@ -40,6 +42,7 @@ const SET_MISSION_MUTATION = 'SET_MISSION_MUTATION'
 const SET_BOARDS_MUTATION = 'SET_BOARDS_MUTATION'
 const SET_SECTORS_MUTATION = 'SET_SECTORS_MUTATION'
 const SET_MISSION_TYPES_MUTATION = 'SET_MISSION_TYPES_MUTATION'
+const SET_BIDDERS_MUTATION = 'SET_BIDDERS_MUTATION'
 
 export const PUBLIC_MISSIONS_GETTER = 'PUBLIC_MISSIONS_GETTER'
 export const MISSION_TYPE_GETTER = 'MISSION_TYPE_GETTER'
@@ -47,7 +50,10 @@ export const MISSION_TYPES_FOR_SELECT_GETTER = 'MISSION_TYPES_FOR_SELECT_GETTER'
 export const BOARDS_FOR_SELECT_GETTER = 'BOARDS_FOR_SELECT_GETTER'
 export const SECTORS_FOR_SELECT_GETTER = 'SECTORS_FOR_SELECT_GETTER'
 export const SECTOR_SYSTEMS_FOR_SELECT_GETTER = 'SECTOR_SYSTEMS_FOR_SELECT_GETTER'
-export const CURRENT_BOARD_IMAGE_URL = 'CURRENT_BOARD_IMAGE_URL'
+export const BOARD_IMAGE_URL_GETTER = 'BOARD_IMAGE_URL_GETTER'
+export const BOARD_NAME_GETTER = 'BOARD_NAME_GETTER'
+export const USER_IMAGE_URL_GETTER = 'USER_IMAGE_URL_GETTER'
+export const USER_NAME_GETTER = 'USER_NAME_GETTER'
 
 export default new Vuex.Store({
   state: initialState(),
@@ -103,8 +109,10 @@ export default new Vuex.Store({
       }
     },
     async [GET_MISSION_ACTION]({ commit }, missionId) {
-      const { data } = await Vue.prototype.$axios.get(apiUrl + 'missions/' + missionId)
-      commit(SET_MISSION_MUTATION, data)
+      const missionResponse = await Vue.prototype.$axios.get(apiUrl + 'missions/' + missionId)
+      const biddersResponse = await Vue.prototype.$axios.get(apiUrl + 'missions/' + missionId + '/bidders')
+      commit(SET_MISSION_MUTATION, missionResponse.data)
+      commit(SET_BIDDERS_MUTATION, biddersResponse.data)
     },
     async [GET_MISSION_TYPES_ACTION]({ commit }) {
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'mission-types')
@@ -119,7 +127,14 @@ export default new Vuex.Store({
       } catch (error) {
         genericError('An error occurred. Failed to create new mission.')
       }
-    }
+    },
+    async [CREATE_BID_ACTION]({ dispatch }, { bidderId, missionId }) {
+      await Vue.prototype.$axios.post(apiUrl + 'bids', {
+        bidderId,
+        missionId,
+      })
+      await dispatch(GET_MISSION_ACTION, missionId)
+    },
   },
   mutations: {
     [SET_PROFILE_MUTATION](state, user) {
@@ -146,6 +161,9 @@ export default new Vuex.Store({
     [SET_MISSION_TYPES_MUTATION](state, types) {
       Vue.set(state, 'missionTypes', [ ...types ])
     },
+    [SET_BIDDERS_MUTATION](state, bidders) {
+      Vue.set(state, 'bidders', [ ...bidders ])
+    }
   },
   getters: {
     [PUBLIC_MISSIONS_GETTER]: state => {
@@ -172,8 +190,11 @@ export default new Vuex.Store({
         value: board.uid,
       })).filter(b => b.label.toLowerCase() !== 'public')
     },
-    [CURRENT_BOARD_IMAGE_URL]: state => boardUid => {
-      return state.boards.filter(board => board.uid === boardUid).map(board => board.image)
+    [BOARD_IMAGE_URL_GETTER]: state => boardUid => {
+      return state.boards.find(board => board.uid === boardUid).image
+    },
+    [BOARD_NAME_GETTER]: state => boardUid => {
+      return state.boards.find(board => board.uid === boardUid).name
     },
     [SECTORS_FOR_SELECT_GETTER]: state => {
       const unsortedSectors = state.sectors.map(sector => ({
@@ -189,6 +210,12 @@ export default new Vuex.Store({
         value: sys.uid,
       }))
       return sortArrayByObjectProperty(unsortedSystems, 'label')
-    }
+    },
+    [USER_IMAGE_URL_GETTER]: state => uid => {
+      return state.users.find(user => user.uid === uid).image
+    },
+    [USER_NAME_GETTER]: state => uid => {
+      return state.users.find(user => user.uid === uid).handle
+    },
   }
 })

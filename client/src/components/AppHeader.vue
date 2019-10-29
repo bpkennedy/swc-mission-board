@@ -6,7 +6,7 @@
         rounded
       >
         <q-img
-          :src="CURRENT_BOARD_IMAGE_URL($route.params.id)"
+          :src="BOARD_IMAGE_URL_GETTER($route.params.id)"
           spinner-color="white"
           style="height: 100%; max-width: 100%"
         />
@@ -46,7 +46,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { CURRENT_BOARD_IMAGE_URL } from '../store'
+import { BOARD_IMAGE_URL_GETTER } from '../store'
 import TabNav from './TabNav.vue'
 import NewMission from './NewMission.vue'
 
@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      CURRENT_BOARD_IMAGE_URL,
+      BOARD_IMAGE_URL_GETTER,
     ]),
     currentUserPhotoUrl() {
       return this.$store.state.user.image ? this.$store.state.user.image : ''
