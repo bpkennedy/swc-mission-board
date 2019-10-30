@@ -34,6 +34,7 @@ export const GET_MISSION_TYPES_ACTION = 'GET_MISSION_TYPES_ACTION'
 export const CREATE_MISSION_ACTION = 'CREATE_MISSION_ACTION'
 export const CREATE_BID_ACTION = 'CREATE_BID_ACTION'
 export const ACCEPT_BID_ACTION = 'ACCEPT_BID_ACTION'
+export const WITHDRAW_MISSION_ACTION = 'WITHDRAW_MISSION_ACTION'
 
 const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
 const SET_USERS_MUTATION = 'SET_USERS_MUTATION'
@@ -146,6 +147,10 @@ export default new Vuex.Store({
         bidderId,
         missionId,
       })
+      await dispatch(GET_MISSION_ACTION, missionId)
+    },
+    async [WITHDRAW_MISSION_ACTION]({ dispatch }, { missionId }) {
+      await Vue.prototype.$axios.put(apiUrl + 'missions/' + missionId)
       await dispatch(GET_MISSION_ACTION, missionId)
     },
   },

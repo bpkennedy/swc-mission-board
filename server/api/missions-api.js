@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getAll, getOne, query, createOne, systems } from '../db'
+import { getAll, getOne, query, createOne, systems, updateMultiple } from '../db'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
 import { celebrate, Joi } from 'celebrate'
 
@@ -28,6 +28,40 @@ function hydratedSystemMissions (missions) {
     }
     return hydratedMission
   })
+}
+
+async function withdrawMission(mission) {
+  const updateMultipleRefSet = []
+    const activeBidForMissionQuery = [{
+      field: 'mission_id',
+      comparison: '==',
+      value: mission.uid,
+    }, {
+      field: 'bidder_id',
+      comparison: '==',
+      value: mission.contractor_id,
+    }, {
+      field: 'status',
+      comparison: '==',
+      value: 'Active',
+    }]
+    const activeBids = await query({
+      collection: 'bids',
+      querySets: activeBidForMissionQuery
+    })
+
+    for (const bid of activeBids) {
+      updateMultipleRefSet.push({ collection: 'bids', id: bid.uid, updateSet: { status: 'Withdrawn'}})
+    }
+    updateMultipleRefSet.push({
+      collection: 'missions',
+      id: mission.uid,
+      updateSet: {
+        status: 'Withdrawn',
+        contractor_id: null,
+      }
+    })
+    await updateMultiple(updateMultipleRefSet)
 }
 
 export default () => {
@@ -75,6 +109,17 @@ export default () => {
     }
     const newMission = await createOne({ collection: 'missions', updateSet })
     res.status(201).send(newMission)
+  })
+  
+  api.put('/:id', swcAuthenticatedMiddleware, celebrate({
+    params: Joi.object().keys({
+      id: Joi.string().required(),
+    })
+  }), async (req, res) => {
+    const mission = await getOne({ collection: 'missions', id: req.params.id })
+    await withdrawMission(mission)
+    const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
+    res.status(200).send(updatedMission)
   })
   
   api.get('/public', swcAuthenticatedMiddleware, async (req, res) => {

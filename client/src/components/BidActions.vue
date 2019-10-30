@@ -113,6 +113,7 @@ import { genericError, genericSuccess } from '../utils'
 import {
   CREATE_BID_ACTION,
   ACCEPT_BID_ACTION,
+  WITHDRAW_MISSION_ACTION,
   BIDDERS_FOR_SELECT_GETTER,
   MISSION_IS_BIDDING,
   MISSION_IS_PENDING,
@@ -140,14 +141,21 @@ export default {
           bidderId: this.selectedBidder.value,
           bidId: this.selectedBidder.bidId,
         })
-        this.genericSuccess(`You bid on the mission: ${this.mission.title}.`)
+        this.genericSuccess(`You accepted ${this.selectedBidder.value}'s bid!`)
       } catch (error) {
-        this.genericError('There was an error trying to create your bid.')
+        this.genericError('There was an error trying to accept this bid.')
       }
     },
     async completeMission() {},
     async declineMission() {},
-    async withdrawMission() {},
+    async withdrawMission() {
+      try {
+        await this.$store.dispatch(WITHDRAW_MISSION_ACTION, { missionId: this.mission.uid })
+        this.genericSuccess(`You withdrew mission: ${this.mission.title}.`)
+      } catch (error) {
+        this.genericError('There was an error trying to withdraw this mission.')
+      }
+    },
     async markPaid() {},
     async leaveFeedback() {},
     async postBid() {
