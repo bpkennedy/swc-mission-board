@@ -57,7 +57,14 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
 import { formatPrice } from '../utils'
+import {
+  BOARD_IMAGE_URL_GETTER,
+  BOARD_NAME_GETTER,
+  USER_IMAGE_URL_GETTER,
+  USER_NAME_GETTER,
+} from '../store'
 
 export default {
   name: 'MissionsRow',
@@ -73,21 +80,25 @@ export default {
     },
     getMissionImageFromUid(mission) {
       if (mission.origin_board_id) {
-        const boardCreator = this.$store.state.boards.find(board => board.uid === mission.origin_board_id)
-        return boardCreator.image
+        return this.BOARD_IMAGE_URL_GETTER(mission.origin_board_id)
       }
-      const userCreator = this.$store.state.users.find(user => user.uid === mission.created_by)
-      return userCreator.image
+      return this.USER_IMAGE_URL_GETTER(mission.created_by)
     },
     getMissionNameFromUid(mission) {
       if (mission.origin_board_id) {
-        const boardCreator = this.$store.state.boards.find(board => board.uid === mission.origin_board_id)
-        return boardCreator.name
+        return this.BOARD_NAME_GETTER(mission.origin_board_id)
       }
-      const creator = this.$store.state.users.find(user => user.uid === mission.created_by)
-      return creator.handle
+      return this.USER_NAME_GETTER(mission.created_by)
     },
     formatPrice
-  }
+  },
+  computed: {
+    ...mapGetters([
+      BOARD_IMAGE_URL_GETTER,
+      BOARD_NAME_GETTER,
+      USER_IMAGE_URL_GETTER,
+      USER_NAME_GETTER,
+    ])
+  },
 }
 </script>

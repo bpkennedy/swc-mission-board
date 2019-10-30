@@ -47,6 +47,7 @@ const SET_BIDDERS_MUTATION = 'SET_BIDDERS_MUTATION'
 export const PUBLIC_MISSIONS_GETTER = 'PUBLIC_MISSIONS_GETTER'
 export const MISSION_TYPE_GETTER = 'MISSION_TYPE_GETTER'
 export const MISSION_TYPES_FOR_SELECT_GETTER = 'MISSION_TYPES_FOR_SELECT_GETTER'
+export const BIDDERS_FOR_SELECT_GETTER = 'BIDDERS_FOR_SELECT_GETTER'
 export const BOARDS_FOR_SELECT_GETTER = 'BOARDS_FOR_SELECT_GETTER'
 export const SECTORS_FOR_SELECT_GETTER = 'SECTORS_FOR_SELECT_GETTER'
 export const SECTOR_SYSTEMS_FOR_SELECT_GETTER = 'SECTOR_SYSTEMS_FOR_SELECT_GETTER'
@@ -54,6 +55,10 @@ export const BOARD_IMAGE_URL_GETTER = 'BOARD_IMAGE_URL_GETTER'
 export const BOARD_NAME_GETTER = 'BOARD_NAME_GETTER'
 export const USER_IMAGE_URL_GETTER = 'USER_IMAGE_URL_GETTER'
 export const USER_NAME_GETTER = 'USER_NAME_GETTER'
+export const MISSION_IS_BIDDING = 'MISSION_IS_BIDDING'
+export const MISSION_IS_PENDING = 'MISSION_IS_PENDING'
+export const MISSION_IS_APPROVING = 'MISSION_IS_APPROVING'
+export const MISSION_IS_PAID = 'MISSION_IS_PAID'
 
 export default new Vuex.Store({
   state: initialState(),
@@ -184,6 +189,12 @@ export default new Vuex.Store({
         value: type.uid,
       }))
     },
+    [BIDDERS_FOR_SELECT_GETTER]: (state, getters) => {
+      return state.bidders.map(bidder => ({
+        label: getters.USER_NAME_GETTER(bidder.bidder_id),
+        value: bidder.uid,
+      }))
+    },
     [BOARDS_FOR_SELECT_GETTER]: state => {
       return state.boards.map(board => ({
         label: board.name,
@@ -191,10 +202,12 @@ export default new Vuex.Store({
       })).filter(b => b.label.toLowerCase() !== 'public')
     },
     [BOARD_IMAGE_URL_GETTER]: state => boardUid => {
-      return state.boards.find(board => board.uid === boardUid).image
+      const board = state.boards.find(board => board.uid === boardUid)
+      return board ? board.image : undefined
     },
     [BOARD_NAME_GETTER]: state => boardUid => {
-      return state.boards.find(board => board.uid === boardUid).name
+      const board = state.boards.find(board => board.uid === boardUid)
+      return board ? board.name : undefined
     },
     [SECTORS_FOR_SELECT_GETTER]: state => {
       const unsortedSectors = state.sectors.map(sector => ({
@@ -212,10 +225,24 @@ export default new Vuex.Store({
       return sortArrayByObjectProperty(unsortedSystems, 'label')
     },
     [USER_IMAGE_URL_GETTER]: state => uid => {
-      return state.users.find(user => user.uid === uid).image
+      const user = state.users.find(user => user.uid === uid)
+      return user ? user.image : undefined
     },
     [USER_NAME_GETTER]: state => uid => {
-      return state.users.find(user => user.uid === uid).handle
+      const user = state.users.find(user => user.uid === uid)
+      return user ? user.handle : undefined
+    },
+    [MISSION_IS_BIDDING]: state => {
+      return state.mission.status === 'Available'
+    },
+    [MISSION_IS_PENDING]: state => {
+      return state.mission.status === 'Pending'
+    },
+    [MISSION_IS_APPROVING]: state => {
+      return state.mission.status === 'Complete'
+    },
+    [MISSION_IS_PAID]: state => {
+      return state.mission.status === 'Paid'
     },
   }
 })
