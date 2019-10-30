@@ -1,3 +1,4 @@
+import { Promise } from 'es6-promise'
 import { Router } from 'express'
 import { getAll, getOne, query, createOne, systems, updateMultiple } from '../db'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
@@ -137,6 +138,33 @@ export default () => {
       querySets: availablePublicMissionsQuery
     })
     res.status(200).send(hydratedSystemMissions(publicMissions).map(addMapCoordinatesToMission))
+  })
+  
+  api.get('/me', swcAuthenticatedMiddleware, async (req, res) => {
+    const myWorkingMissionsQuery = [{
+      field: 'contractor_id',
+      comparison: '==',
+      value: req.swcUid
+    }]
+    const myCreatedMissionsQuery = [{
+      field: 'created_by',
+      comparison: '==',
+      value: req.swcUid
+    }]
+    const workingMissions = query({
+      collection: 'missions',
+      querySets: myWorkingMissionsQuery
+    })
+    const createdMissions = query({
+      collection: 'missions',
+      querySets: myCreatedMissionsQuery
+    })
+    const myMissionsResponse = await Promise.all([workingMissions, createdMissions])
+    const missionData = [
+      ...hydratedSystemMissions(myMissionsResponse[0]).map(addMapCoordinatesToMission),
+      ...hydratedSystemMissions(myMissionsResponse[1]).map(addMapCoordinatesToMission),
+    ]
+    res.status(200).send(missionData)
   })
   
   api.get('/board/:id', swcAuthenticatedMiddleware, async (req, res) => {

@@ -44,7 +44,7 @@ const routes = [
           {
             name: 'My Missions',
             path: '',
-            component: () => import('pages/Index.vue')
+            component: () => import('pages/MyMissions.vue')
           },
         ]
       },

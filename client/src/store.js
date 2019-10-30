@@ -17,6 +17,7 @@ const initialState = () => {
     boards: [],
     sectors: [],
     boardMissions: [],
+    myMissions: [],
     missionTypes: [],
   }
 }
@@ -39,6 +40,7 @@ export const WITHDRAW_MISSION_ACTION = 'WITHDRAW_MISSION_ACTION'
 const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
 const SET_USERS_MUTATION = 'SET_USERS_MUTATION'
 const SET_PUBLIC_MISSIONS_MUTATION = 'SET_MISSIONS_MUTATION'
+const SET_MY_MISSIONS_MUTATION = 'SET_MY_MISSIONS_MUTATION'
 const SET_BOARD_MISSIONS_MUTATION = 'SET_BOARD_MISSIONS_MUTATION'
 const SET_MISSION_MUTATION = 'SET_MISSION_MUTATION'
 const SET_BOARDS_MUTATION = 'SET_BOARDS_MUTATION'
@@ -74,6 +76,7 @@ export default new Vuex.Store({
       const users = Vue.prototype.$axios.get(apiUrl + 'users')
       const missionTypes = Vue.prototype.$axios.get(apiUrl + 'mission-types')
       const publicMissions = Vue.prototype.$axios.get(apiUrl + 'missions/public')
+      const myMissions = Vue.prototype.$axios.get(apiUrl + 'missions/me')
       const boards = Vue.prototype.$axios.get(apiUrl + 'boards')
       const sectors = Vue.prototype.$axios.get(apiUrl + 'sectors')
 
@@ -82,6 +85,7 @@ export default new Vuex.Store({
         users,
         missionTypes,
         publicMissions,
+        myMissions,
         boards,
         sectors
       ])
@@ -89,8 +93,9 @@ export default new Vuex.Store({
       commit(SET_USERS_MUTATION, bootupData[1].data)
       commit(SET_MISSION_TYPES_MUTATION, bootupData[2].data)
       commit(SET_PUBLIC_MISSIONS_MUTATION, bootupData[3].data)
-      commit(SET_BOARDS_MUTATION, bootupData[4].data)
-      commit(SET_SECTORS_MUTATION, bootupData[5].data)
+      commit(SET_MY_MISSIONS_MUTATION, bootupData[4].data)
+      commit(SET_BOARDS_MUTATION, bootupData[5].data)
+      commit(SET_SECTORS_MUTATION, bootupData[6].data)
     },
     async [GET_PROFILE_ACTION]({ commit }) {
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'users/me')
@@ -163,6 +168,9 @@ export default new Vuex.Store({
     },
     [SET_PUBLIC_MISSIONS_MUTATION](state, missions) {
       Vue.set(state, 'missions', [ ...missions ])
+    },
+    [SET_MY_MISSIONS_MUTATION](state, missions) {
+      Vue.set(state, 'myMissions', [ ...missions ])
     },
     [SET_BOARD_MISSIONS_MUTATION](state, boardMissions) {
       Vue.set(state, 'boardMissions', [ ...boardMissions ])
