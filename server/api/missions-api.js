@@ -121,7 +121,7 @@ export default () => {
     }
   })
   
-  api.get('/:id/bidders', swcAuthenticatedMiddleware, async (req, res) => {
+  api.get('/:id/bids', swcAuthenticatedMiddleware, async (req, res) => {
     const missionBiddersQuery = [{
       field: 'mission_id',
       comparison: '==',

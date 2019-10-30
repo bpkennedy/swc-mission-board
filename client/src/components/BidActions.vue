@@ -112,6 +112,7 @@ import { genericError, genericSuccess } from '../utils'
 
 import {
   CREATE_BID_ACTION,
+  ACCEPT_BID_ACTION,
   BIDDERS_FOR_SELECT_GETTER,
   MISSION_IS_BIDDING,
   MISSION_IS_PENDING,
@@ -132,7 +133,18 @@ export default {
       Vue.set(this, 'selectBidDialog', false)
       Vue.set(this, 'selectedBidder', '')
     },
-    async saveBidder() {},
+    async saveBidder() {
+      try {
+        await this.$store.dispatch(ACCEPT_BID_ACTION, {
+          missionId: this.mission.uid,
+          bidderId: this.selectedBidder.value,
+          bidId: this.selectedBidder.bidId,
+        })
+        this.genericSuccess(`You bid on the mission: ${this.mission.title}.`)
+      } catch (error) {
+        this.genericError('There was an error trying to create your bid.')
+      }
+    },
     async completeMission() {},
     async declineMission() {},
     async withdrawMission() {},
@@ -158,7 +170,7 @@ export default {
   },
   computed: {
     ...mapState([
-      'bidders',
+      'bids',
       'user',
       'mission',
     ]),
@@ -170,7 +182,7 @@ export default {
       MISSION_IS_PAID,
     ]),
     validateCanBid() {
-      return this.bidders.find(bidder => bidder.bidder_id === this.user.uid)
+      return this.bids.find(bid => bid.bidder_id === this.user.uid)
     },
     userIsCreator() {
       return this.mission.created_by === this.user.uid

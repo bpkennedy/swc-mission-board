@@ -116,9 +116,9 @@ export const updateOne = async ({ id, collection, updateSet }) => {
 }
 
 export const updateMultiple = async (refSetArray) => {
-  await db.runTransaction(t => {
+  return db.runTransaction(async t => {
     for (const refSet of refSetArray) {
-      t.update(db.collection(refSet.collection).doc(refSet.id), refSet.updateSet)
+      await t.update(db.collection(refSet.collection).doc(refSet.id), refSet.updateSet)
     }
   })
 }

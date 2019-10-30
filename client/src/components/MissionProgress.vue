@@ -60,7 +60,7 @@ import Vue from 'vue'
 const statusTypes = {
   'Available': 1,
   'Bidding': 1,
-  'In Progress': 2,
+  'Pending': 2,
   'Approving': 3,
   'Paying Out': 4,
 }
