@@ -1,8 +1,15 @@
 <template>
-  <q-card class="board-card">
-    <img :src="board.image">
+  <q-card
+    class="board-card"
+    clickable
+    v-ripple
+  >
+    <img
+      :src="board.image"
+      class="q-pa-md border-bottom"
+    >
     <q-card-section>
-      <div class="text-h6">
+      <div class="text-h6 text-center">
         {{ board.name }}
       </div>
     </q-card-section>
@@ -28,3 +35,14 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus">
+.board-card {
+  &:hover {
+    cursor: pointer;
+  }
+  .border-bottom {
+    border-bottom: 1px solid #eeeeee;
+  }
+}
+</style>

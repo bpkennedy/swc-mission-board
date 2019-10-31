@@ -6,56 +6,98 @@
       text-color="white"
       label="Bid Mission"
       class="full-width q-mb-sm"
+      :loading="buttonLoading.bidMission"
       @click="postBid"
-    />
+    >
+      <template v-slot:loading>
+        <q-spinner-hourglass class="on-left" />
+        Loading...
+      </template>
+    </q-btn>
     <q-btn
       v-if="userIsContractor && MISSION_IS_PENDING"
       color="primary"
       text-color="white"
       label="Complete Mission"
       class="full-width q-mb-sm"
+      :loading="buttonLoading.completeMission"
       @click="completeMission"
-    />
+    >
+      <template v-slot:loading>
+        <q-spinner-hourglass class="on-left" />
+        Loading...
+      </template>
+    </q-btn>
     <q-btn
       v-if="userIsContractor && (MISSION_IS_PENDING || MISSION_IS_APPROVING)"
       color="negative"
       text-color="white"
       label="Decline Mission"
       class="full-width q-mb-sm"
+      :loading="buttonLoading.declineMission"
       @click="declineClicked = true"
-    />
+    >
+      <template v-slot:loading>
+        <q-spinner-hourglass class="on-left" />
+        Loading...
+      </template>
+    </q-btn>
     <q-btn
       v-if="userIsCreator && MISSION_IS_BIDDING && bids.length > 0"
       color="primary"
       text-color="white"
       label="Select Bid"
       class="full-width q-mb-sm"
+      :loading="buttonLoading.selectBid"
       @click="selectBidDialog = true"
-    />
+    >
+      <template v-slot:loading>
+        <q-spinner-hourglass class="on-left" />
+        Loading...
+      </template>
+    </q-btn>
     <q-btn
       v-if="userIsCreator && MISSION_IS_APPROVING"
       color="primary"
       text-color="white"
       label="Mark Paid"
       class="full-width q-mb-sm"
+      :loading="buttonLoading.markPaid"
       @click="markPaidClicked = true"
-    />
+    >
+      <template v-slot:loading>
+        <q-spinner-hourglass class="on-left" />
+        Loading...
+      </template>
+    </q-btn>
     <q-btn
       v-if="userIsCreator && (MISSION_IS_BIDDING || MISSION_IS_PENDING || MISSION_IS_APPROVING)"
       color="negative"
       text-color="white"
       label="Withdraw Mission"
       class="full-width q-mb-sm"
+      :loading="buttonLoading.withdrawMission"
       @click="withdrawClicked = true"
-    />
+    >
+      <template v-slot:loading>
+        <q-spinner-hourglass class="on-left" />
+        Loading...
+      </template>
+    </q-btn>
     <q-btn
       v-if="(userIsCreator || userIsContractor) && MISSION_IS_PAID"
       color="negative"
       text-color="white"
-      label="Withdraw Mission"
+      label="Leave Feedback"
       class="full-width q-mb-sm"
+      :loading="buttonLoading.leaveFeedback"
       @click="leaveFeedback"
-    />
+    >
+      <template v-slot:loading>
+        <q-spinner-hourglass class="on-left" />
+        Loading...
+      </template>
+    </q-btn>
     <q-dialog
       v-model="selectBidDialog"
       persistent
@@ -155,6 +197,15 @@ export default {
       withdrawClicked: false,
       declineClicked: false,
       markPaidClicked: false,
+      buttonLoading: {
+        bidMission: false,
+        selectBid: false,
+        withdrawMission: false,
+        declineMission: false,
+        completeMission: false,
+        markPaid: false,
+        leaveFeedback: false,
+      }
     }
   },
   methods: {
@@ -163,6 +214,7 @@ export default {
       Vue.set(this, 'selectedBidder', '')
     },
     async saveBidder() {
+      Vue.set(this.buttonLoading, 'selectBid', true)
       try {
         await this.$store.dispatch(ACCEPT_BID_ACTION, {
           missionId: this.mission.uid,
@@ -173,16 +225,20 @@ export default {
       } catch (error) {
         this.genericError('There was an error trying to accept this bid.')
       }
+      Vue.set(this.buttonLoading, 'selectBid', false)
     },
     async completeMission() {
+      Vue.set(this.buttonLoading, 'completeMission', true)
       try {
         await this.$store.dispatch(COMPLETE_MISSION_ACTION, { missionId: this.mission.uid })
         this.genericSuccess(`NOICE! You completed mission: ${this.mission.title}`)
       } catch (error) {
         this.genericError('There was an error trying to complete this mission.')
       }
+      Vue.set(this.buttonLoading, 'completeMission', false)
     },
     async declineMission() {
+      Vue.set(this.buttonLoading, 'declineMission', true)
       Vue.set(this, 'declineClicked', false)
       try {
         await this.$store.dispatch(DECLINE_MISSION_ACTION, { missionId: this.mission.uid })
@@ -190,8 +246,10 @@ export default {
       } catch (error) {
         this.genericError('There was an error trying to decline this mission.')
       }
+      Vue.set(this.buttonLoading, 'declineMission', false)
     },
     async withdrawMission() {
+      Vue.set(this.buttonLoading, 'withdrawMission', true)
       Vue.set(this, 'withdrawClicked', false)
       try {
         await this.$store.dispatch(WITHDRAW_MISSION_ACTION, { missionId: this.mission.uid })
@@ -199,8 +257,10 @@ export default {
       } catch (error) {
         this.genericError('There was an error trying to withdraw this mission.')
       }
+      Vue.set(this.buttonLoading, 'withdrawMission', false)
     },
     async markPaid() {
+      Vue.set(this.buttonLoading, 'markPaid', true)
       Vue.set(this, 'markPaidClicked', false)
       try {
         await this.$store.dispatch(MARK_PAID_MISSION_ACTION, { missionId: this.mission.uid })
@@ -208,6 +268,7 @@ export default {
       } catch (error) {
         this.genericError('There was an error trying to mark paid this mission.')
       }
+      Vue.set(this.buttonLoading, 'markPaid', false)
     },
     async leaveFeedback() {},
     async postBid() {
@@ -215,6 +276,7 @@ export default {
         this.genericError('You already bid on this mission.')
         return
       }
+      Vue.set(this.buttonLoading, 'bidMission', true)
       try {
         await this.$store.dispatch(CREATE_BID_ACTION, {
           missionId: this.mission.uid,
@@ -224,6 +286,7 @@ export default {
       } catch (error) {
         this.genericError('There was an error trying to create your bid.')
       }
+      Vue.set(this.buttonLoading, 'bidMission', false)
     },
     genericError,
     genericSuccess,

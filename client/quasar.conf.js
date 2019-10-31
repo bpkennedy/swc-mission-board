@@ -69,6 +69,7 @@ module.exports = function (ctx) {
         'QSeparator',
         'QSelect',
         'QSpace',
+        'QSpinnerHourglass',
         'QSpinnerPie',
         'QStepper',
         'QStep',

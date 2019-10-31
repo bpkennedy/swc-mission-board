@@ -29,8 +29,10 @@ export const START_ADMIN_TASK_ACTION = 'START_ADMIN_TASK_ACTION'
 export const GET_INITIAL_APP_DATA = 'GET_INITIAL_APP_DATA'
 export const GET_PROFILE_ACTION = 'GET_PROFILE_ACTION'
 export const GET_USERS_ACTION = 'GET_USERS_ACTION'
-export const GET_PUBLIC_MISSIONS_ACTION = 'GET_MISSIONS_ACTION'
+export const GET_PUBLIC_MISSIONS_ACTION = 'GET_PUBLIC_MISSIONS_ACTION'
+export const GET_MY_MISSIONS_ACTION = 'GET_MY_MISSIONS_ACTION'
 export const GET_BOARD_MISSIONS_ACTION = 'GET_BOARD_MISSIONS_ACTION'
+export const GO_TO_PRIVATE_BOARD = 'GO_TO_PRIVATE_BOARD'
 export const GET_MISSION_ACTION = 'GET_MISSION_ACTION'
 export const GET_MISSION_TYPES_ACTION = 'GET_MISSION_TYPES_ACTION'
 export const CREATE_MISSION_ACTION = 'CREATE_MISSION_ACTION'
@@ -115,15 +117,26 @@ export default new Vuex.Store({
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'missions/public')
       commit(SET_PUBLIC_MISSIONS_MUTATION, data)
     },
+    async [GET_MY_MISSIONS_ACTION]({ commit }) {
+      const { data } = await Vue.prototype.$axios.get(apiUrl + 'missions/me')
+      commit(SET_MY_MISSIONS_MUTATION, data)
+    },
     async [GET_BOARD_MISSIONS_ACTION]({ commit }, { boardId, router }) {
+      const { data } = await Vue.prototype.$axios.get(apiUrl + 'missions/board/' + boardId)
+      commit(SET_BOARD_MISSIONS_MUTATION, data)
+    },
+    async [GO_TO_PRIVATE_BOARD]({ commit }, { boardId, boardName, router }) {
       try {
-        const { data } = await Vue.prototype.$axios.get(apiUrl + 'missions/board/' + boardId)
-        commit(SET_BOARD_MISSIONS_MUTATION, data)
+        await Vue.prototype.$axios.get(apiUrl + 'boards/' + boardId + '/member')
+        router.push({
+          name: 'boardMissions',
+          params: {
+            id: boardId,
+            boardName,
+          },
+        })
       } catch (error) {
-        if (error.response.data.message === 'Forbidden') {
-          genericError('You do not have access to this board.')
-          router.back()
-        }
+        genericError('You do not have access to this board.')
       }
     },
     async [GET_MISSION_ACTION]({ commit }, missionId) {
@@ -142,6 +155,7 @@ export default new Vuex.Store({
         genericSuccess('New Mission created!')
         closePopupElement.click()
         dispatch(GET_PUBLIC_MISSIONS_ACTION)
+        dispatch(GET_MY_MISSIONS_ACTION)
       } catch (error) {
         genericError('An error occurred. Failed to create new mission.')
       }

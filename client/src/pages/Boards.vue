@@ -1,13 +1,13 @@
 <template>
   <q-page
-    class="flex flex-center column"
+    class="q-pa-md row items-start q-gutter-md"
     padding
   >
     <board-row
       v-for="board of validBoards"
       :key="board.uid"
       :board="board"
-      @click.native="goToBoard(board)"
+      @click.native="tryGoToBoard(board.uid, board.name)"
     />
   </q-page>
 </template>
@@ -17,6 +17,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { GO_TO_PRIVATE_BOARD } from '../store'
 import BoardRow from '../components/BoardRow.vue'
 
 export default {
@@ -33,14 +34,8 @@ export default {
     }
   },
   methods: {
-    goToBoard(board) {
-      this.$router.push({
-        name: 'boardMissions',
-        params: {
-          id: board.uid,
-          boardName: board.name,
-        },
-      })
+    tryGoToBoard(boardId, boardName) {
+      this.$store.dispatch(GO_TO_PRIVATE_BOARD, { boardId, boardName, router: this.$router })
     }
   }
 }
