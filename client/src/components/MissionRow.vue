@@ -36,7 +36,7 @@
         caption
         lines="1"
       >
-        {{ mission.starting_system_name }} to {{ mission.ending_system_name }}
+        {{ missionStarting }} to {{ missionDestination }}
       </q-item-label>
     </q-item-section>
 
@@ -116,7 +116,13 @@ export default {
       BOARD_NAME_GETTER,
       USER_IMAGE_URL_GETTER,
       USER_NAME_GETTER,
-    ])
+    ]),
+    missionDestination() {
+      return this.mission.ending_system_name ? this.mission.ending_system_name : 'secret location'
+    },
+    missionStarting() {
+      return this.mission.starting_system_name ? this.mission.starting_system_name : 'secret location'
+    }
   },
 }
 </script>

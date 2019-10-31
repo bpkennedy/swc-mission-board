@@ -120,7 +120,6 @@ export default {
       this.$store.dispatch(SET_MISSION_FILTER_LABEL_ACTION, type)
     },
     filterMissionsByTypeAndKeyword() {
-      console.log('filtering')
       let updatedFilteredMissions = [ ...this.missions ]
       if (this.filterLabel === 'Working') {
         updatedFilteredMissions = this.missions.filter(m => m.contractor_id === this.user.uid)

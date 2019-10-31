@@ -9,7 +9,7 @@
       class="q-pa-md border-bottom"
     >
     <q-card-section>
-      <div class="text-h6 text-center">
+      <div class="text-center">
         {{ board.name }}
       </div>
     </q-card-section>
@@ -19,7 +19,7 @@
 <style lang="stylus">
 .board-card
   width: 100%
-  max-width: 300px
+  max-width: 13rem;
 </style>
 
 <script>

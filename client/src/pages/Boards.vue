@@ -1,6 +1,6 @@
 <template>
   <q-page
-    class="q-pa-md row items-start q-gutter-md"
+    class="q-pa-md row items-start q-gutter-md justify-center"
     padding
   >
     <board-row

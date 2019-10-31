@@ -6,16 +6,42 @@ import { swcAuthenticatedMiddleware } from '../lib/swc'
 import { celebrate, Joi } from 'celebrate'
 
 function addMapCoordinatesToMission(mission) {
-  const startingSystem = systems.find(s => s.uid === mission.starting_system)
-  const endingSystem = systems.find(s => s.uid === mission.ending_system)
+  let startingX = null
+  let startingY = null
+  let endingX = null
+  let endingY = null
+  let startingSystemName = null
+  let endingSystemName = null
+
+  if (mission.starting_system) {
+    const startingSystem = systems.find(s => s.uid === mission.starting_system)
+    startingX = startingSystem.x
+    startingY = startingSystem.y
+    startingSystemName = startingSystem.name
+  }
+  if (mission.ending_system) {
+    const endingSystem = systems.find(s => s.uid === mission.ending_system)
+    endingX = endingSystem.x
+    endingY = endingSystem.y
+    endingSystemName = endingSystem.name
+  }
+  if (mission.custom_starting_x && mission.custom_starting_y) {
+    startingX = mission.custom_starting_x
+    startingY = mission.custom_starting_y
+  }
+  if (mission.custom_ending_x && mission.custom_ending_y) {
+    endingX = mission.custom_ending_x
+    endingY = mission.custom_ending_y
+  }
+  
   return {
     ...mission,
-    startingSystemName: startingSystem ? startingSystem.name : null,
-    endingSystemName: endingSystem ? endingSystem.name : null,
-    startingX: startingSystem ? startingSystem.x : null,
-    startingY: startingSystem ? startingSystem.y : null,
-    endingX: endingSystem ? endingSystem.x : null,
-    endingY: endingSystem ? endingSystem.y : null,
+    startingSystemName,
+    endingSystemName,
+    startingX,
+    startingY,
+    endingX,
+    endingY,
   }
 }
 
@@ -89,6 +115,10 @@ export default () => {
       startingSystem: Joi.string().allow('').optional(),
       endingSector: Joi.string().allow('').optional(),
       endingSystem: Joi.string().allow('').optional(),
+      customStartingX: Joi.number().allow(null),
+      customStartingY: Joi.number().allow(null),
+      customEndingX: Joi.number().allow(null),
+      customEndingY: Joi.number().allow(null),
     })
   }), async (req, res) => {
     const updateSet = {
@@ -106,6 +136,10 @@ export default () => {
       starting_system: req.body.startingSystem,
       ending_sector: req.body.endingSector,
       ending_system: req.body.endingSystem,
+      custom_starting_x: req.body.customStartingX,
+      custom_starting_y: req.body.customStartingY,
+      custom_ending_x: req.body.customEndingX,
+      custom_ending_y: req.body.customEndingY,
       status: 'Available',
       created_by: req.swcUid,
     }

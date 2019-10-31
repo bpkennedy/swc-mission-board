@@ -1,8 +1,26 @@
 <template>
   <div class="q-gutter-md">
+    <q-item
+      tag="label"
+      v-ripple
+    >
+      <q-item-section
+        avatar
+        top
+      >
+        <q-toggle v-model="customStartingCoords" />
+      </q-item-section>
+      <q-item-section>
+        <q-item-label>Custom Starting Coordinates?</q-item-label>
+        <q-item-label caption>
+          Custom X,Y coordinates for starting location
+        </q-item-label>
+      </q-item-section>
+    </q-item>
     <q-select
       outlined
       v-model="value.sector"
+      v-if="!customStartingCoords"
       use-input
       clearable
       input-debounce="0"
@@ -12,7 +30,7 @@
       label="Starting Sector"
     />
     <q-select
-      v-if="value.sector"
+      v-if="value.sector && !customStartingCoords"
       outlined
       v-model="value.system"
       use-input
@@ -23,9 +41,45 @@
       behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'"
       label="Starting System"
     />
+    <div
+      v-if="customStartingCoords"
+      class="row"
+    >
+      <q-input
+        outlined
+        v-model.number="value.customStartingX"
+        type="number"
+        label="Starting X"
+        class="q-mr-md"
+      />
+      <q-input
+        outlined
+        v-model.number="value.customStartingY"
+        type="number"
+        label="Starting Y"
+      />
+    </div>
+    <q-item
+      tag="label"
+      v-ripple
+    >
+      <q-item-section
+        avatar
+        top
+      >
+        <q-toggle v-model="customEndingCoords" />
+      </q-item-section>
+      <q-item-section>
+        <q-item-label>Custom Destination Coordinates?</q-item-label>
+        <q-item-label caption>
+          Custom X,Y coordinates for destination location
+        </q-item-label>
+      </q-item-section>
+    </q-item>
     <q-select
       outlined
       v-model="value.sectorEnd"
+      v-if="!customEndingCoords"
       use-input
       clearable
       input-debounce="0"
@@ -35,7 +89,7 @@
       label="Destination Sector"
     />
     <q-select
-      v-if="value.sectorEnd"
+      v-if="value.sectorEnd && !customEndingCoords"
       outlined
       v-model="value.systemEnd"
       use-input
@@ -46,6 +100,24 @@
       behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'"
       label="Destination System"
     />
+    <div
+      v-if="customEndingCoords"
+      class="row"
+    >
+      <q-input
+        outlined
+        v-model.number="value.customEndingX"
+        type="number"
+        label="Destination X"
+        class="q-mr-md"
+      />
+      <q-input
+        outlined
+        v-model.number="value.customEndingY"
+        type="number"
+        label="Destination Y"
+      />
+    </div>
   </div>
 </template>
 
@@ -71,6 +143,8 @@ export default {
   },
   data() {
     return {
+      customStartingCoords: false,
+      customEndingCoords: false,
       filteredSectors: [],
       filteredSectorsEnd: [],
       filteredSystems: [],
@@ -123,6 +197,18 @@ export default {
   watch: {
     value() {
       this.$emit('input', this.value)
+    },
+    customStartingCoords() {
+      Vue.set(this.value, 'customStartingX', null)
+      Vue.set(this.value, 'customStartingY', null)
+      Vue.set(this.value, 'sector', null)
+      Vue.set(this.value, 'system', null)
+    },
+    customEndingCoords() {
+      Vue.set(this.value, 'customEndingX', null)
+      Vue.set(this.value, 'customEndingY', null)
+      Vue.set(this.value, 'sectorEnd', null)
+      Vue.set(this.value, 'systemEnd', null)
     }
   },
   created() {
