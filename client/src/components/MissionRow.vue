@@ -45,9 +45,13 @@
       top
       class="row justify-center"
     >
+      <q-item-label class="text-weight-bold text-subtitle1">
+        <q-icon name="attach_money" />{{ formatPrice(mission.pay) }}
+      </q-item-label>
       <q-badge
-        :label="formatPrice(mission.pay)"
-        class="text-h6"
+        :label="mission.status"
+        :color="statusColors[mission.status]"
+        class="q-mt-sm"
       />
     </q-item-section>
   </q-item>
@@ -72,6 +76,20 @@ export default {
     mission: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      statusColors: {
+        'Available': 'blue-13',
+        'Bidding': 'blue-13',
+        'Pending': 'orange-13',
+        'Approving': 'purple-13',
+        'Paying Out': 'green-13',
+        'Withdraw': 'red-13',
+        'Declined': 'red-13',
+        'Complete': 'blue-grey-13',
+      }
     }
   },
   methods: {

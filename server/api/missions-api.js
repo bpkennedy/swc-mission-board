@@ -1,4 +1,5 @@
 import { Promise } from 'es6-promise'
+import { uniqBy } from 'lodash'
 import { Router } from 'express'
 import { getAll, getOne, query, createOne, systems, updateMultiple } from '../db'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
@@ -197,7 +198,7 @@ export default () => {
       ...hydratedSystemMissions(myMissionsResponse[0]).map(addMapCoordinatesToMission),
       ...hydratedSystemMissions(myMissionsResponse[1]).map(addMapCoordinatesToMission),
     ]
-    res.status(200).send(missionData)
+    res.status(200).send(uniqBy(missionData, i => i.uid))
   })
   
   api.get('/board/:id', swcAuthenticatedMiddleware, async (req, res) => {

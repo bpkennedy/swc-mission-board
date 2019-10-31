@@ -25,7 +25,7 @@
         <q-item-section>
           <q-item-label>Pay</q-item-label>
           <q-item-label caption>
-            {{ mission.pay }}
+            <q-icon name="attach_money" />{{ formatPrice(mission.pay) }}
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -99,6 +99,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { formatPrice } from '../utils'
 import CreatedBy from './CreatedBy.vue'
 
 export default {
@@ -134,7 +135,8 @@ export default {
         }
         this.audiences.push(this.$store.state.boards.find(board => board.uid === boardId))
       }
-    }
+    },
+    formatPrice,
   },
   created() {
     this.getAudienceBoardNames(this.mission.board_ids)
