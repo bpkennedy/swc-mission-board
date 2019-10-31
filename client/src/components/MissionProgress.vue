@@ -56,6 +56,7 @@
 
 <script>
 import Vue from 'vue'
+import { mapState } from 'vuex'
 
 const statusTypes = {
   'Available': 1,
@@ -67,19 +68,25 @@ const statusTypes = {
 
 export default {
   name: 'MissionProgress',
-  props: {
-    mission: {
-      type: Object,
-      required: true
-    },
-  },
   data() {
     return {
       step: 0
     }
   },
-  mounted() {
-    Vue.set(this, 'step', statusTypes[this.mission.status])
+  computed: {
+    ...mapState([
+      'mission',
+    ])
+  },
+  watch: {
+    mission: {
+      immediate: true,
+      handler() {
+        if (this.mission.status) {
+          Vue.set(this, 'step', statusTypes[this.mission.status])
+        }
+      }
+    }
   }
 }
 </script>

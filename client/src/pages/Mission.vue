@@ -2,7 +2,6 @@
   <q-page class="row">
     <mission-summary
       v-if="!loadingIsVisible"
-      :mission="mission"
       class="col"
     />
     <single-mission-map
@@ -17,7 +16,6 @@
     />
     <mission-metadata
       v-if="!loadingIsVisible"
-      :mission="mission"
       class="col"
     />
     <q-inner-loading

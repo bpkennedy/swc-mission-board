@@ -19,6 +19,7 @@ const initialState = () => {
     boardMissions: [],
     myMissions: [],
     missionTypes: [],
+    filterLabel: 'All',
   }
 }
 
@@ -36,6 +37,7 @@ export const CREATE_MISSION_ACTION = 'CREATE_MISSION_ACTION'
 export const CREATE_BID_ACTION = 'CREATE_BID_ACTION'
 export const ACCEPT_BID_ACTION = 'ACCEPT_BID_ACTION'
 export const WITHDRAW_MISSION_ACTION = 'WITHDRAW_MISSION_ACTION'
+export const SET_MISSION_FILTER_LABEL_ACTION = 'SET_MISSION_FILTER_LABEL_ACTION'
 
 const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
 const SET_USERS_MUTATION = 'SET_USERS_MUTATION'
@@ -47,6 +49,7 @@ const SET_BOARDS_MUTATION = 'SET_BOARDS_MUTATION'
 const SET_SECTORS_MUTATION = 'SET_SECTORS_MUTATION'
 const SET_MISSION_TYPES_MUTATION = 'SET_MISSION_TYPES_MUTATION'
 const SET_BIDS_MUTATION = 'SET_BIDS_MUTATION'
+const SET_MISSION_FILTER_LABEL_MUTATION = 'SET_MISSION_FILTER_LABEL_MUTATION'
 
 export const PUBLIC_MISSIONS_GETTER = 'PUBLIC_MISSIONS_GETTER'
 export const MISSION_TYPE_GETTER = 'MISSION_TYPE_GETTER'
@@ -155,8 +158,11 @@ export default new Vuex.Store({
       await dispatch(GET_MISSION_ACTION, missionId)
     },
     async [WITHDRAW_MISSION_ACTION]({ dispatch }, { missionId }) {
-      await Vue.prototype.$axios.put(apiUrl + 'missions/' + missionId)
+      await Vue.prototype.$axios.put(apiUrl + 'missions/' + missionId + '/withdraw')
       await dispatch(GET_MISSION_ACTION, missionId)
+    },
+    async [SET_MISSION_FILTER_LABEL_ACTION]({ commit }, label) {
+      commit(SET_MISSION_FILTER_LABEL_MUTATION, label)
     },
   },
   mutations: {
@@ -189,6 +195,9 @@ export default new Vuex.Store({
     },
     [SET_BIDS_MUTATION](state, bids) {
       Vue.set(state, 'bids', [ ...bids ])
+    },
+    [SET_MISSION_FILTER_LABEL_MUTATION](state, label) {
+      Vue.set(state, 'filterLabel', label)
     }
   },
   getters: {
@@ -255,7 +264,7 @@ export default new Vuex.Store({
       return user ? user.handle : undefined
     },
     [MISSION_IS_BIDDING]: state => {
-      return state.mission.status === 'Available'
+      return state.mission.status === 'Available' || state.mission.status === 'Bidding'
     },
     [MISSION_IS_PENDING]: state => {
       return state.mission.status === 'Pending'

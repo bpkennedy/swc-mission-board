@@ -1,17 +1,18 @@
 <template>
   <div>
-    <q-item-label header>
-      Bidders
+    <q-item-label
+      header
+      class="text-weight-bold text-body1"
+    >
+      Assigned Contractor
     </q-item-label>
     <q-item
-      v-for="bid of bids"
-      :key="bid.bidder_id"
       clickable
       v-ripple
     >
       <q-item-section avatar>
-        <q-avatar v-if="USER_IMAGE_URL_GETTER(bid.bidder_id)">
-          <img :src="USER_IMAGE_URL_GETTER(bid.bidder_id)">
+        <q-avatar v-if="USER_IMAGE_URL_GETTER(mission.contractor_id)">
+          <img :src="USER_IMAGE_URL_GETTER(mission.contractor_id)">
         </q-avatar>
         <q-avatar
           v-else
@@ -20,8 +21,8 @@
           icon="person"
         />
       </q-item-section>
-      <q-item-section v-if="USER_NAME_GETTER(bid.bidder_id)">
-        {{ USER_NAME_GETTER(bid.bidder_id) }}
+      <q-item-section v-if="USER_NAME_GETTER(mission.contractor_id)">
+        {{ USER_NAME_GETTER(mission.contractor_id) }}
       </q-item-section>
       <q-item-section
         v-else
@@ -30,6 +31,7 @@
         User Deleted
       </q-item-section>
     </q-item>
+    <q-separator />
   </div>
 </template>
 
@@ -45,10 +47,10 @@ import {
 } from '../store'
 
 export default {
-  name: 'Bidders',
+  name: 'Contractor',
   computed: {
     ...mapState([
-      'bids',
+      'mission',
     ]),
     ...mapGetters([
       USER_IMAGE_URL_GETTER,

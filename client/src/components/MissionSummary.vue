@@ -62,7 +62,7 @@
       <q-item-label header>
         Location
       </q-item-label>
-      <q-item>
+      <q-item v-if="mission.startingX && mission.startingY">
         <q-item-section>
           <q-item-label>
             Starting System
@@ -72,7 +72,7 @@
           </q-item-label>
         </q-item-section>
       </q-item>
-      <q-item>
+      <q-item v-if="mission.endingX && mission.endingY">
         <q-item-section>
           <q-item-label>
             Destination System
@@ -98,6 +98,7 @@
 </style>
 
 <script>
+import { mapState } from 'vuex'
 import CreatedBy from './CreatedBy.vue'
 
 export default {
@@ -106,10 +107,6 @@ export default {
     CreatedBy,
   },
   props: {
-    mission: {
-      type: Object,
-      required: true
-    },
     display: {
       type: String,
       default: 'column'
@@ -119,6 +116,11 @@ export default {
     return {
       audiences: [],
     }
+  },
+  computed: {
+    ...mapState([
+      'mission',
+    ])
   },
   methods: {
     missionTypeName(typeUid) {

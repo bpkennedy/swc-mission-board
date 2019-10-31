@@ -112,7 +112,7 @@ export default () => {
     res.status(201).send(newMission)
   })
   
-  api.put('/:id', swcAuthenticatedMiddleware, celebrate({
+  api.put('/:id/withdraw', swcAuthenticatedMiddleware, celebrate({
     params: Joi.object().keys({
       id: Joi.string().required(),
     })

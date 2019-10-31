@@ -1,7 +1,7 @@
 <template>
   <div class="fit q-pa-md">
     <q-btn
-      v-if="userIsContractor && MISSION_IS_BIDDING"
+      v-if="MISSION_IS_BIDDING"
       color="primary"
       text-color="white"
       label="Bid Mission"
@@ -25,7 +25,7 @@
       @click="declineMission"
     />
     <q-btn
-      v-if="userIsCreator && MISSION_IS_BIDDING"
+      v-if="userIsCreator && MISSION_IS_BIDDING && bids.length > 0"
       color="primary"
       text-color="white"
       label="Select Bid"
@@ -46,7 +46,7 @@
       text-color="white"
       label="Withdraw Mission"
       class="full-width q-mb-sm"
-      @click="withdrawMission"
+      @click="withdrawClicked = true"
     />
     <q-btn
       v-if="(userIsCreator || userIsContractor) && MISSION_IS_PAID"
@@ -99,6 +99,12 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <confirm
+      message="Are you sure you want to withdraw this mission?"
+      :show="withdrawClicked"
+      @confirm="withdrawMission"
+      @cancel="withdrawClicked = false"
+    />
   </div>
 </template>
 
@@ -109,6 +115,7 @@
 import Vue from 'vue'
 import { mapState, mapGetters } from 'vuex'
 import { genericError, genericSuccess } from '../utils'
+import Confirm from './Confirm.vue'
 
 import {
   CREATE_BID_ACTION,
@@ -123,10 +130,14 @@ import {
 
 export default {
   name: 'BidActions',
+  components: {
+    Confirm,
+  },
   data() {
     return {
       selectBidDialog: false,
       selectedBidder: '',
+      withdrawClicked: false,
     }
   },
   methods: {
@@ -141,7 +152,7 @@ export default {
           bidderId: this.selectedBidder.value,
           bidId: this.selectedBidder.bidId,
         })
-        this.genericSuccess(`You accepted ${this.selectedBidder.value}'s bid!`)
+        this.genericSuccess(`You accepted ${this.selectedBidder.label}'s bid!`)
       } catch (error) {
         this.genericError('There was an error trying to accept this bid.')
       }
@@ -149,6 +160,7 @@ export default {
     async completeMission() {},
     async declineMission() {},
     async withdrawMission() {
+      Vue.set(this, 'withdrawClicked', false)
       try {
         await this.$store.dispatch(WITHDRAW_MISSION_ACTION, { missionId: this.mission.uid })
         this.genericSuccess(`You withdrew mission: ${this.mission.title}.`)
