@@ -9,7 +9,7 @@
       @click="postBid"
     />
     <q-btn
-      v-if="userIsContractor && MISSION_IS_BIDDING"
+      v-if="userIsContractor && MISSION_IS_PENDING"
       color="primary"
       text-color="white"
       label="Complete Mission"
@@ -22,7 +22,7 @@
       text-color="white"
       label="Decline Mission"
       class="full-width q-mb-sm"
-      @click="declineMission"
+      @click="declineClicked = true"
     />
     <q-btn
       v-if="userIsCreator && MISSION_IS_BIDDING && bids.length > 0"
@@ -38,7 +38,7 @@
       text-color="white"
       label="Mark Paid"
       class="full-width q-mb-sm"
-      @click="markPaid"
+      @click="markPaidClicked = true"
     />
     <q-btn
       v-if="userIsCreator && (MISSION_IS_BIDDING || MISSION_IS_PENDING || MISSION_IS_APPROVING)"
@@ -105,6 +105,18 @@
       @confirm="withdrawMission"
       @cancel="withdrawClicked = false"
     />
+    <confirm
+      message="Are you sure you want to decline this mission?"
+      :show="declineClicked"
+      @confirm="declineMission"
+      @cancel="declineClicked = false"
+    />
+    <confirm
+      message="By clicking Yes, you are affirming that you have delivered the agreed upon terms of this mission to the contractor. Is this correct?"
+      :show="markPaidClicked"
+      @confirm="markPaid"
+      @cancel="markPaidClicked = false"
+    />
   </div>
 </template>
 
@@ -121,6 +133,9 @@ import {
   CREATE_BID_ACTION,
   ACCEPT_BID_ACTION,
   WITHDRAW_MISSION_ACTION,
+  DECLINE_MISSION_ACTION,
+  COMPLETE_MISSION_ACTION,
+  MARK_PAID_MISSION_ACTION,
   BIDDERS_FOR_SELECT_GETTER,
   MISSION_IS_BIDDING,
   MISSION_IS_PENDING,
@@ -138,6 +153,8 @@ export default {
       selectBidDialog: false,
       selectedBidder: '',
       withdrawClicked: false,
+      declineClicked: false,
+      markPaidClicked: false,
     }
   },
   methods: {
@@ -157,8 +174,23 @@ export default {
         this.genericError('There was an error trying to accept this bid.')
       }
     },
-    async completeMission() {},
-    async declineMission() {},
+    async completeMission() {
+      try {
+        await this.$store.dispatch(COMPLETE_MISSION_ACTION, { missionId: this.mission.uid })
+        this.genericSuccess(`NOICE! You completed mission: ${this.mission.title}`)
+      } catch (error) {
+        this.genericError('There was an error trying to complete this mission.')
+      }
+    },
+    async declineMission() {
+      Vue.set(this, 'declineClicked', false)
+      try {
+        await this.$store.dispatch(DECLINE_MISSION_ACTION, { missionId: this.mission.uid })
+        this.genericSuccess(`You declined mission: ${this.mission.title}.`)
+      } catch (error) {
+        this.genericError('There was an error trying to decline this mission.')
+      }
+    },
     async withdrawMission() {
       Vue.set(this, 'withdrawClicked', false)
       try {
@@ -168,7 +200,15 @@ export default {
         this.genericError('There was an error trying to withdraw this mission.')
       }
     },
-    async markPaid() {},
+    async markPaid() {
+      Vue.set(this, 'markPaidClicked', false)
+      try {
+        await this.$store.dispatch(MARK_PAID_MISSION_ACTION, { missionId: this.mission.uid })
+        this.genericSuccess(`You marked paid mission: ${this.mission.title}.`)
+      } catch (error) {
+        this.genericError('There was an error trying to mark paid this mission.')
+      }
+    },
     async leaveFeedback() {},
     async postBid() {
       if (this.validateCanBid) {

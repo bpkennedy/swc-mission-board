@@ -15,7 +15,8 @@
       :lat-lng="xy(mission.startingX, mission.startingY)"
       :icon="iconStart"
     >
-      <l-popup>
+      <l-popup @click.native="goToMission(mission.uid)">
+        <div>{{ mission.title }}</div>
         <div>Starting: <b>{{ mission.startingSystemName }}</b></div>
         <div>{{ mission.startingX + ',' + mission.startingY }}</div>
       </l-popup>
@@ -26,7 +27,8 @@
       :lat-lng="xy(mission.endingX, mission.endingY)"
       :icon="iconEnd"
     >
-      <l-popup>
+      <l-popup @click.native="goToMission(mission.uid)">
+        <div>{{ mission.title }}</div>
         <div>Destination: <b>{{ mission.endingSystemName }}</b></div>
         <div>{{ mission.endingX + ',' + mission.endingY }}</div>
       </l-popup>
@@ -94,7 +96,23 @@ export default {
     },
   },
   methods: {
+    goToMission(id) {
+      this.$router.push({
+        name: 'mission',
+        params: {
+          id,
+        },
+      })
+    },
     xy,
   }
 }
 </script>
+
+<style lang="stylus">
+.leaflet-popup-content-wrapper {
+  &:hover {
+    cursor: pointer;
+  }
+}
+</style>

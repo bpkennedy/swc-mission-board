@@ -37,6 +37,9 @@ export const CREATE_MISSION_ACTION = 'CREATE_MISSION_ACTION'
 export const CREATE_BID_ACTION = 'CREATE_BID_ACTION'
 export const ACCEPT_BID_ACTION = 'ACCEPT_BID_ACTION'
 export const WITHDRAW_MISSION_ACTION = 'WITHDRAW_MISSION_ACTION'
+export const DECLINE_MISSION_ACTION = 'DECLINE_MISSION_ACTION'
+export const COMPLETE_MISSION_ACTION = 'COMPLETE_MISSION_ACTION'
+export const MARK_PAID_MISSION_ACTION = 'MARK_PAID_MISSION_ACTION'
 export const SET_MISSION_FILTER_LABEL_ACTION = 'SET_MISSION_FILTER_LABEL_ACTION'
 
 const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
@@ -161,6 +164,18 @@ export default new Vuex.Store({
       await Vue.prototype.$axios.put(apiUrl + 'missions/' + missionId + '/withdraw')
       await dispatch(GET_MISSION_ACTION, missionId)
     },
+    async [DECLINE_MISSION_ACTION]({ dispatch }, { missionId }) {
+      await Vue.prototype.$axios.put(apiUrl + 'missions/' + missionId + '/decline')
+      await dispatch(GET_MISSION_ACTION, missionId)
+    },
+    async [COMPLETE_MISSION_ACTION]({ dispatch }, { missionId }) {
+      await Vue.prototype.$axios.put(apiUrl + 'missions/' + missionId + '/complete')
+      await dispatch(GET_MISSION_ACTION, missionId)
+    },
+    async [MARK_PAID_MISSION_ACTION]({ dispatch }, { missionId }) {
+      await Vue.prototype.$axios.put(apiUrl + 'missions/' + missionId + '/paid')
+      await dispatch(GET_MISSION_ACTION, missionId)
+    },
     async [SET_MISSION_FILTER_LABEL_ACTION]({ commit }, label) {
       commit(SET_MISSION_FILTER_LABEL_MUTATION, label)
     },
@@ -270,10 +285,10 @@ export default new Vuex.Store({
       return state.mission.status === 'Pending'
     },
     [MISSION_IS_APPROVING]: state => {
-      return state.mission.status === 'Complete'
+      return state.mission.status === 'Approving'
     },
     [MISSION_IS_PAID]: state => {
-      return state.mission.status === 'Paid'
+      return state.mission.status === 'Paying Out'
     },
   }
 })
