@@ -5,6 +5,18 @@
       style="height: 100%;"
     >
       <q-item>
+        <q-input
+          borderless
+          :dense="true"
+          v-model="searchText"
+          @keydown.esc="clearSearch($event)"
+          label="Mission Title Search"
+          style="width:100%;"
+        >
+          <template v-slot:prepend>
+            <q-icon name="search" />
+          </template>
+        </q-input>
         <q-space />
         <q-btn-dropdown
           color="white"
@@ -25,7 +37,7 @@
             <q-item
               clickable
               v-close-popup
-              @click="filterMissionsBy('All')"
+              @click="changeFilterType('All')"
             >
               <q-item-section>
                 <q-item-label>
@@ -36,7 +48,7 @@
             <q-item
               clickable
               v-close-popup
-              @click="filterMissionsBy('Working')"
+              @click="changeFilterType('Working')"
             >
               <q-item-section>
                 <q-item-label>
@@ -47,7 +59,7 @@
             <q-item
               clickable
               v-close-popup
-              @click="filterMissionsBy('Created')"
+              @click="changeFilterType('Created')"
             >
               <q-item-section>
                 <q-item-label>
@@ -92,6 +104,7 @@ export default {
   data() {
     return {
       filteredMissions: [],
+      searchText: '',
     }
   },
   methods: {
@@ -103,33 +116,50 @@ export default {
         },
       })
     },
-    filterMissionsBy(type) {
-      if (type === 'Working') {
-        const missionsContracting = this.missions.filter(m => m.contractor_id === this.user.uid)
-        Vue.set(this, 'filteredMissions', [ ...missionsContracting ])
-        this.$store.dispatch(SET_MISSION_FILTER_LABEL_ACTION, 'Working')
-      } else if (type === 'Created') {
-        const missionsCreated = this.missions.filter(m => m.created_by === this.user.uid)
-        Vue.set(this, 'filteredMissions', [ ...missionsCreated ])
-        this.$store.dispatch(SET_MISSION_FILTER_LABEL_ACTION, 'Created')
-      } else {
-        Vue.set(this, 'filteredMissions', [ ...this.missions ])
-        this.$store.dispatch(SET_MISSION_FILTER_LABEL_ACTION, 'All')
+    changeFilterType(type) {
+      this.$store.dispatch(SET_MISSION_FILTER_LABEL_ACTION, type)
+    },
+    filterMissionsByTypeAndKeyword() {
+      console.log('filtering')
+      let updatedFilteredMissions = [ ...this.missions ]
+      if (this.filterLabel === 'Working') {
+        updatedFilteredMissions = this.missions.filter(m => m.contractor_id === this.user.uid)
+      } else if (this.filterLabel === 'Created') {
+        updatedFilteredMissions = this.missions.filter(m => m.created_by === this.user.uid)
       }
+      if (this.searchText.length === 0) {
+        Vue.set(this, 'filteredMissions', [ ...updatedFilteredMissions ])
+      } else {
+        const filteredMissionsByKeyword = updatedFilteredMissions.filter(m => {
+          return m.title.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1
+        })
+        Vue.set(this, 'filteredMissions', [ ...filteredMissionsByKeyword ])
+      }
+    },
+    clearSearch($event) {
+      Vue.set(this, 'searchText', '')
+      $event.target.blur()
     }
   },
   computed: {
     ...mapState([
       'user',
       'filterLabel',
-    ])
+    ]),
   },
   watch: {
     missions: {
       immediate: true,
       handler() {
-        this.filterMissionsBy(this.filterLabel)
+        this.changeFilterType(this.filterLabel)
+        this.filterMissionsByTypeAndKeyword()
       },
+    },
+    filterLabel() {
+      this.filterMissionsByTypeAndKeyword()
+    },
+    searchText() {
+      this.filterMissionsByTypeAndKeyword()
     }
   }
 }
