@@ -84,6 +84,23 @@ const routes = [
     ],
   },
   {
+    path: '/notifications',
+    component: () => import('layouts/RootLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('layouts/NavigationLayout.vue'),
+        children: [
+          {
+            name: 'Notifications',
+            path: '',
+            component: () => import('pages/Notifications.vue')
+          }
+        ]
+      }
+    ],
+  },
+  {
     path: '/',
     component: () => import('layouts/RootLayout.vue'),
     children: [

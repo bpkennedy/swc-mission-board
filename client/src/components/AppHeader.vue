@@ -23,6 +23,19 @@
         class="q-mr-sm"
         @click="dialog = true"
       />
+      <q-btn
+        flat
+        round
+        dense
+        color="white"
+        icon="notifications"
+        class="q-mr-sm"
+        to="/notifications"
+      />
+      <!-- <q-badge color="red" floating transparent>
+          4
+        </q-badge> -->
+      <!-- </q-btn> -->
       <q-avatar rounded>
         <q-img
           :src="currentUserPhotoUrl"

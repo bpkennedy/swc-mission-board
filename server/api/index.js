@@ -7,6 +7,7 @@ import missionsApi from './missions-api'
 import bidsApi from './bids-api'
 import tasksApi from './tasks-api'
 import sectorsApi from './sectors-api'
+import notificationsApi from './notifications-api'
 
 export const createApiRoutes = () => {
 	let api = Router()
@@ -18,5 +19,6 @@ export const createApiRoutes = () => {
 	api.use('/boards', boardsApi())
 	api.use('/tasks', tasksApi())
 	api.use('/sectors', sectorsApi())
+	api.use('/notifications', notificationsApi())
 	return api
 }

@@ -18,6 +18,7 @@ const initialState = () => {
     sectors: [],
     boardMissions: [],
     myMissions: [],
+    notifications: [],
     missionTypes: [],
     filterLabel: 'All',
   }
@@ -55,6 +56,7 @@ const SET_SECTORS_MUTATION = 'SET_SECTORS_MUTATION'
 const SET_MISSION_TYPES_MUTATION = 'SET_MISSION_TYPES_MUTATION'
 const SET_BIDS_MUTATION = 'SET_BIDS_MUTATION'
 const SET_MISSION_FILTER_LABEL_MUTATION = 'SET_MISSION_FILTER_LABEL_MUTATION'
+const SET_NOTIFICATIONS_MUTATION = 'SET_NOTIFICATIONS_MUTATION'
 
 export const PUBLIC_MISSIONS_GETTER = 'PUBLIC_MISSIONS_GETTER'
 export const MISSION_TYPE_GETTER = 'MISSION_TYPE_GETTER'
@@ -85,6 +87,7 @@ export default new Vuex.Store({
       const missionTypes = Vue.prototype.$axios.get(apiUrl + 'mission-types')
       const publicMissions = Vue.prototype.$axios.get(apiUrl + 'missions/public')
       const myMissions = Vue.prototype.$axios.get(apiUrl + 'missions/me')
+      const notifications = Vue.prototype.$axios.get(apiUrl + 'notifications/me')
       const boards = Vue.prototype.$axios.get(apiUrl + 'boards')
       const sectors = Vue.prototype.$axios.get(apiUrl + 'sectors')
 
@@ -94,6 +97,7 @@ export default new Vuex.Store({
         missionTypes,
         publicMissions,
         myMissions,
+        notifications,
         boards,
         sectors
       ])
@@ -102,8 +106,9 @@ export default new Vuex.Store({
       commit(SET_MISSION_TYPES_MUTATION, bootupData[2].data)
       commit(SET_PUBLIC_MISSIONS_MUTATION, bootupData[3].data)
       commit(SET_MY_MISSIONS_MUTATION, bootupData[4].data)
-      commit(SET_BOARDS_MUTATION, bootupData[5].data)
-      commit(SET_SECTORS_MUTATION, bootupData[6].data)
+      commit(SET_NOTIFICATIONS_MUTATION, bootupData[5].data)
+      commit(SET_BOARDS_MUTATION, bootupData[6].data)
+      commit(SET_SECTORS_MUTATION, bootupData[7].data)
     },
     async [GET_PROFILE_ACTION]({ commit }) {
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'users/me')
@@ -227,6 +232,9 @@ export default new Vuex.Store({
     },
     [SET_MISSION_FILTER_LABEL_MUTATION](state, label) {
       Vue.set(state, 'filterLabel', label)
+    },
+    [SET_NOTIFICATIONS_MUTATION](state, notifications) {
+      Vue.set(state, 'notifications', notifications)
     }
   },
   getters: {
