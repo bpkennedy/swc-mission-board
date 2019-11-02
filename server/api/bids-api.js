@@ -1,40 +1,48 @@
 import { Router } from 'express'
-import { getAll, createOne, query, updateMultiple } from '../db'
+import { getAll, query, getOne, updateOrCreateMultiple, createMultiple, generateNewDocRef } from '../db'
+import { createBidEvent, acceptBidEvent } from '../lib/logging'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
 import { celebrate, Joi } from 'celebrate'
 
-const acceptBid = async (bidId, bidderId, missionId) => {
-  const updateMultipleRefSet = []
-    // update mission with contractorId
-    const updateMissionSet = {
-      contractor_id: bidderId,
-      status: 'Pending',
+const acceptBid = async (mission, bid, acceptingBidderId, currentUserUid) => {
+  const updateRefSetArray = []
+  const targetUserUids = []
+  // update mission with contractorId
+  const updateMissionSet = {
+    contractor_id: bid.bidder_id,
+    status: 'Pending',
+  }
+  updateRefSetArray.push({collection: 'missions', id: mission.uid, updateSet: updateMissionSet})
+
+  // update winning bid for missionId with active
+  const allBidsForMissionQuery = [{
+    field: 'mission_id',
+    comparison: '==',
+    value: mission.uid
+  }]
+  const missionBids = await query({
+    collection: 'bids',
+    querySets: allBidsForMissionQuery
+  })
+
+  // update mission bids with Active or Closed
+  for (const missionBid of missionBids) {
+    if (missionBid.uid === acceptingBidderId) {
+      const winningBidUpdateSet = { status: 'Active' }
+      updateRefSetArray.push({collection: 'bids', id: missionBid.uid, updateSet: winningBidUpdateSet})
+    } else {
+      const losingBidUpdateSet = { status: 'Closed' }
+      updateRefSetArray.push({collection: 'bids', id: missionBid.uid, updateSet: losingBidUpdateSet})
     }
-    updateMultipleRefSet.push({collection: 'missions', id: missionId, updateSet: updateMissionSet})
-
-    // update winning bid for missionId with active
-    const allBidsForMissionQuery = [{
-      field: 'mission_id',
-      comparison: '==',
-      value: missionId
-    }]
-    const missionBids = await query({
-      collection: 'bids',
-      querySets: allBidsForMissionQuery
-    })
-
-    // update mission bids with Active or Closed
-    for (const bid of missionBids) {
-      if (bid === bidId) {
-        const winningBidUpdateSet = { status: 'Active' }
-        updateMultipleRefSet.push({collection: 'bids', id: bid.uid, updateSet: winningBidUpdateSet})
-      } else {
-        const losingBidUpdateSet = { status: 'Closed' }
-        updateMultipleRefSet.push({collection: 'bids', id: bid.uid, updateSet: losingBidUpdateSet})
-      }
-    }
-
-    await updateMultiple(updateMultipleRefSet)
+    targetUserUids.push(missionBid.bidder_id)
+  }
+  
+  targetUserUids.push(mission.created_by)
+  const event = await acceptBidEvent(mission, targetUserUids, bid, currentUserUid)
+  await updateOrCreateMultiple({
+    updateRefSetArray,
+    createRefSetArray: [{ collection: 'events', updateSet: event }]
+  })
 }
 
 export default () => {
@@ -55,7 +63,14 @@ export default () => {
       mission_id: req.body.missionId,
       created_by: req.swcUid,
     }
-    const newBid = await createOne({ collection: 'bids', updateSet })
+    const mission = await getOne({ collection: 'missions', id: req.body.missionId })
+    const event = await createBidEvent(mission, [req.swcUid, mission.created_by], req.swcUid)
+    const newBidRef = await generateNewDocRef('bids')
+    await createMultiple([
+      { collection: 'bids', updateSet, ref: newBidRef },
+      { collection: 'events', updateSet: event, }
+    ])
+    const newBid = await getOne({ collection: 'bids', id: newBidRef.id })
     res.status(201).send(newBid)
   })
   
@@ -65,7 +80,9 @@ export default () => {
       missionId: Joi.string().required(),
     })
   }), async (req, res) => {
-    await acceptBid(req.params.bidId, req.body.bidderId, req.body.missionId)
+    const mission = await getOne({ collection: 'missions', id: req.body.missionId})
+    const bid = await getOne({ collection: 'bids', id: req.params.bidId})
+    await acceptBid(mission, bid, req.body.bidderId, req.swcUid)
     res.status(200).send()
   })
 

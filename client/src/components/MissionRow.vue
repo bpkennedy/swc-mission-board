@@ -45,7 +45,7 @@
       top
       class="row justify-center"
     >
-      <q-item-label class="text-weight-bold text-subtitle1">
+      <q-item-label class="text-weight-bold text-h6">
         <q-icon name="attach_money" />{{ formatPrice(mission.pay) }}
       </q-item-label>
       <q-badge

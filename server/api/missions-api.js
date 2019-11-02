@@ -1,7 +1,8 @@
 import { Promise } from 'es6-promise'
 import { uniqBy } from 'lodash'
 import { Router } from 'express'
-import { getAll, getOne, query, createOne, systems, updateMultiple } from '../db'
+import { getAll, getOne, query, generateNewDocRef, systems, createMultiple, updateOrCreateMultiple } from '../db'
+import { updateMissionEvent, createMissionEvent } from '../lib/logging'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
 import { celebrate, Joi } from 'celebrate'
 
@@ -58,8 +59,11 @@ function hydratedSystemMissions (missions) {
   })
 }
 
-async function updateMissionStatus(mission, missionStatus, bidStatus, removeContractor) {
-  const updateMultipleRefSet = []
+async function updateMissionStatus(mission, missionStatus, bidStatus, removeContractor, currentUserUid) {
+  const updateRefSetArray = []
+  const targetUserUids = []
+  
+  if (mission.contractor_id) {
     const activeBidForMissionQuery = [{
       field: 'mission_id',
       comparison: '==',
@@ -77,19 +81,26 @@ async function updateMissionStatus(mission, missionStatus, bidStatus, removeCont
       collection: 'bids',
       querySets: activeBidForMissionQuery
     })
-
     for (const bid of activeBids) {
-      updateMultipleRefSet.push({ collection: 'bids', id: bid.uid, updateSet: { status: bidStatus }})
+      targetUserUids.push(bid.bidder_id)
+      updateRefSetArray.push({ collection: 'bids', id: bid.uid, updateSet: { status: bidStatus }})
     }
-    updateMultipleRefSet.push({
-      collection: 'missions',
-      id: mission.uid,
-      updateSet: {
-        status: missionStatus,
-        contractor_id: removeContractor ? null : mission.contractor_id,
-      }
-    })
-    await updateMultiple(updateMultipleRefSet)
+  }
+
+  targetUserUids.push(mission.created_by)
+  updateRefSetArray.push({
+    collection: 'missions',
+    id: mission.uid,
+    updateSet: {
+      status: missionStatus,
+      contractor_id: removeContractor ? null : mission.contractor_id,
+    }
+  })
+  const event = await updateMissionEvent(mission, targetUserUids, missionStatus, currentUserUid)
+  await updateOrCreateMultiple({
+    updateRefSetArray,
+    createRefSetArray: [{ collection: 'events', updateSet: event }]
+  })
 }
 
 export default () => {
@@ -143,17 +154,23 @@ export default () => {
       status: 'Available',
       created_by: req.swcUid,
     }
-    const newMission = await createOne({ collection: 'missions', updateSet })
+    const event = await createMissionEvent(req.body.title, [req.swcUid], req.swcUid)
+    const newMissionRef = await generateNewDocRef('missions')
+    await createMultiple([
+      { collection: 'missions', updateSet, ref: newMissionRef },
+      { collection: 'events', updateSet: event, }
+    ])
+    const newMission = await getOne({ collection: 'missions', id: newMissionRef.id })
     res.status(201).send(newMission)
   })
-  
+
   api.put('/:id/withdraw', swcAuthenticatedMiddleware, celebrate({
     params: Joi.object().keys({
       id: Joi.string().required(),
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, 'Withdraw', 'Withdraw', true)
+    await updateMissionStatus(mission, 'Withdraw', 'Withdraw', true, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })
@@ -164,7 +181,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, 'Declined', 'Declined', true)
+    await updateMissionStatus(mission, 'Declined', 'Declined', true, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })
@@ -175,7 +192,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, 'Paying Out', 'Complete', false)
+    await updateMissionStatus(mission, 'Paying Out', 'Complete', false, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })
@@ -186,7 +203,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, 'Approving', 'Active', false)
+    await updateMissionStatus(mission, 'Approving', 'Active', false, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })

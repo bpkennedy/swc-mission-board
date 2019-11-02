@@ -13,6 +13,11 @@ async function createUserProfile(id, token) {
 	return createOne({ collection: 'users', updateSet, id })
 }
 
+export async function userHandle(userUid) {
+	const player = await getOne({ collection: 'users', id: userUid })
+	return player.handle
+}
+
 export default () => {
 	let api = Router()
 

@@ -18,9 +18,9 @@ import Papa from 'papaparse'
 
 
 export let systems = []
-let db = null
+export let db = null
 
-async function generateNewDocRef (collection) {
+export async function generateNewDocRef (collection) {
   return await db.collection(collection).doc()
 }
 
@@ -115,14 +115,6 @@ export const updateOne = async ({ id, collection, updateSet }) => {
   })
 }
 
-export const updateMultiple = async (refSetArray) => {
-  return db.runTransaction(async t => {
-    for (const refSet of refSetArray) {
-      await t.update(db.collection(refSet.collection).doc(refSet.id), refSet.updateSet)
-    }
-  })
-}
-
 export const createOne = async ({ collection, updateSet, id }) => {
   let uid
   if (id) {
@@ -140,15 +132,39 @@ export const createOne = async ({ collection, updateSet, id }) => {
   return getOne({ id: uid, collection })
 }
 
+export const updateMultiple = async (refSetArray) => {
+  return db.runTransaction(async t => {
+    for (const refSet of refSetArray) {
+      await t.update(db.collection(refSet.collection).doc(refSet.id), refSet.updateSet)
+    }
+  })
+}
+
 export const createMultiple = async (refSetArray) => {
   return db.runTransaction(async t => {
     for (const refSet of refSetArray) {
-      const newRef = await generateNewDocRef(refSet.collection)
+      const newRef = refSet.ref ? refSet.ref : await generateNewDocRef(refSet.collection)
       const uid = newRef.id
-      await t.doc(uid).set({
+      await t.set(newRef, {
         uid,
         ...refSet.updateSet
       })
+    }
+  })
+}
+
+export const updateOrCreateMultiple = async ({ updateRefSetArray, createRefSetArray }) => {
+  return db.runTransaction(async t => {
+    for (const refSet of createRefSetArray) {
+      const newRef = refSet.ref ? refSet.ref : await generateNewDocRef(refSet.collection)
+      const uid = newRef.id
+      await t.set(newRef, {
+        uid,
+        ...refSet.updateSet
+      })
+    }
+    for (const refSet of updateRefSetArray) {
+      await t.update(db.collection(refSet.collection).doc(refSet.id), refSet.updateSet)
     }
   })
 }
