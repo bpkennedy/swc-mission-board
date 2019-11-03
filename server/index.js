@@ -10,11 +10,19 @@ import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import { corsHeaders, bodyLimit, port } from './configuration'
 import { initializeDb } from './db'
+import { initializeSocket } from './socket'
 import { createApiRoutes } from './api'
 require('events').EventEmitter.prototype._maxListeners = 30
 const app = express()
 
 app.server = http.createServer(app)
+
+const io = initializeSocket(app.server)
+app.use(function(req, res, next) {
+  req.io = io
+  next()
+})
+
 setSecurityConfig(app)
 const staticFileMiddleware = express.static(path.join(__dirname, '../client/dist/spa'))
 const staticMapMiddleware = express.static(path.join(__dirname, './map'))
