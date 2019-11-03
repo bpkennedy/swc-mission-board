@@ -3,6 +3,11 @@ import { getAll, query, getOne, updateOrCreateMultiple, createMultiple, generate
 import { createBidEvent, acceptBidEvent } from '../lib/logging'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
 import { celebrate, Joi } from 'celebrate'
+import {
+  ACTIVE_KEY,
+  PENDING_KEY,
+  CLOSED_KEY,
+} from '../lib/constants'
 
 const acceptBid = async (mission, bid, acceptingBidderId, currentUserUid) => {
   const updateRefSetArray = []
@@ -10,7 +15,7 @@ const acceptBid = async (mission, bid, acceptingBidderId, currentUserUid) => {
   // update mission with contractorId
   const updateMissionSet = {
     contractor_id: bid.bidder_id,
-    status: 'Pending',
+    status: PENDING_KEY,
   }
   updateRefSetArray.push({collection: 'missions', id: mission.uid, updateSet: updateMissionSet})
 
@@ -28,10 +33,10 @@ const acceptBid = async (mission, bid, acceptingBidderId, currentUserUid) => {
   // update mission bids with Active or Closed
   for (const missionBid of missionBids) {
     if (missionBid.uid === acceptingBidderId) {
-      const winningBidUpdateSet = { status: 'Active' }
+      const winningBidUpdateSet = { status: ACTIVE_KEY }
       updateRefSetArray.push({collection: 'bids', id: missionBid.uid, updateSet: winningBidUpdateSet})
     } else {
-      const losingBidUpdateSet = { status: 'Closed' }
+      const losingBidUpdateSet = { status: CLOSED_KEY }
       updateRefSetArray.push({collection: 'bids', id: missionBid.uid, updateSet: losingBidUpdateSet})
     }
     targetUserUids.push(missionBid.bidder_id)

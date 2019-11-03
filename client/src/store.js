@@ -1,11 +1,40 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { genericError, genericSuccess, sortArrayByObjectProperty } from './utils'
+import {
+  AVAILABLE_KEY,
+  BIDDING_KEY,
+  PENDING_KEY,
+  APPROVING_KEY,
+  PAYING_OUT_KEY,
+  WITHDRAWN_KEY,
+  DECLINED_KEY,
+  COMPLETE_KEY,
+  AVAILABLE_COLOR,
+  BIDDING_COLOR,
+  PENDING_COLOR,
+  APPROVING_COLOR,
+  WITHDRAWN_COLOR,
+  PAYING_OUT_COLOR,
+  DECLINED_COLOR,
+  COMPLETE_COLOR,
+} from './constants'
 
 Vue.use(Vuex)
 
 export const fqdn = window.location.protocol + '//' + window.location.host
 const apiUrl = fqdn + '/api/v1/'
+
+const statusColors = {
+  [AVAILABLE_KEY]: AVAILABLE_COLOR,
+  [BIDDING_KEY]: BIDDING_COLOR,
+  [PENDING_KEY]: PENDING_COLOR,
+  [APPROVING_KEY]: APPROVING_COLOR,
+  [PAYING_OUT_KEY]: PAYING_OUT_COLOR,
+  [WITHDRAWN_KEY]: WITHDRAWN_COLOR,
+  [DECLINED_KEY]: DECLINED_COLOR,
+  [COMPLETE_KEY]: COMPLETE_COLOR,
+}
 
 const initialState = () => {
   return {
@@ -21,11 +50,11 @@ const initialState = () => {
     notifications: [],
     missionTypes: [],
     filterLabel: 'All',
+    statusColors,
   }
 }
 
 export const NEW_MISSION_FORM_RESET_EVENT = 'NEW_MISSION_FORM_RESET_EVENT'
-
 export const START_ADMIN_TASK_ACTION = 'START_ADMIN_TASK_ACTION'
 export const GET_INITIAL_APP_DATA = 'GET_INITIAL_APP_DATA'
 export const GET_PROFILE_ACTION = 'GET_PROFILE_ACTION'
@@ -301,16 +330,16 @@ export default new Vuex.Store({
       return user ? user.handle : undefined
     },
     [MISSION_IS_BIDDING]: state => {
-      return state.mission.status === 'Available' || state.mission.status === 'Bidding'
+      return state.mission.status === AVAILABLE_KEY || state.mission.status === BIDDING_KEY
     },
     [MISSION_IS_PENDING]: state => {
-      return state.mission.status === 'Pending'
+      return state.mission.status === PENDING_KEY
     },
     [MISSION_IS_APPROVING]: state => {
-      return state.mission.status === 'Approving'
+      return state.mission.status === APPROVING_KEY
     },
     [MISSION_IS_PAID]: state => {
-      return state.mission.status === 'Paying Out'
+      return state.mission.status === PAYING_OUT_KEY
     },
   }
 })

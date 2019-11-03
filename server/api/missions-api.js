@@ -5,6 +5,15 @@ import { getAll, getOne, query, generateNewDocRef, systems, createMultiple, upda
 import { updateMissionEvent, createMissionEvent } from '../lib/logging'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
 import { celebrate, Joi } from 'celebrate'
+import {
+  AVAILABLE_KEY,
+  ACTIVE_KEY,
+  APPROVING_KEY,
+  PAYING_OUT_KEY,
+  WITHDRAWN_KEY,
+  DECLINED_KEY,
+  COMPLETE_KEY,
+} from '../lib/constants'
 
 function addMapCoordinatesToMission(mission) {
   let startingX = null
@@ -75,7 +84,7 @@ async function updateMissionStatus(mission, missionStatus, bidStatus, removeCont
     }, {
       field: 'status',
       comparison: '==',
-      value: 'Active',
+      value: ACTIVE_KEY,
     }]
     const activeBids = await query({
       collection: 'bids',
@@ -151,7 +160,7 @@ export default () => {
       custom_starting_y: req.body.customStartingY,
       custom_ending_x: req.body.customEndingX,
       custom_ending_y: req.body.customEndingY,
-      status: 'Available',
+      status: AVAILABLE_KEY,
       created_by: req.swcUid,
     }
     const event = await createMissionEvent(req.body.title, [req.swcUid], req.swcUid)
@@ -170,7 +179,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, 'Withdraw', 'Withdraw', true, req.swcUid)
+    await updateMissionStatus(mission, WITHDRAWN_KEY, WITHDRAWN_KEY, true, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })
@@ -181,7 +190,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, 'Declined', 'Declined', true, req.swcUid)
+    await updateMissionStatus(mission, DECLINED_KEY, DECLINED_KEY, true, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })
@@ -192,7 +201,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, 'Paying Out', 'Complete', false, req.swcUid)
+    await updateMissionStatus(mission, PAYING_OUT_KEY, COMPLETE_KEY, false, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })
@@ -203,7 +212,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, 'Approving', 'Active', false, req.swcUid)
+    await updateMissionStatus(mission, APPROVING_KEY, ACTIVE_KEY, false, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })
@@ -212,7 +221,7 @@ export default () => {
     const availablePublicMissionsQuery = [{
       field: 'status',
       comparison: '==',
-      value: 'Available'
+      value: AVAILABLE_KEY
     }, {
       field: 'board_ids',
       comparison: 'array-contains',

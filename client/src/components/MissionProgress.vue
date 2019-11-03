@@ -57,13 +57,20 @@
 <script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import {
+  AVAILABLE_KEY,
+  BIDDING_KEY,
+  PENDING_KEY,
+  APPROVING_KEY,
+  PAYING_OUT_KEY,
+} from '../constants'
 
 const statusTypes = {
-  'Available': 1,
-  'Bidding': 1,
-  'Pending': 2,
-  'Approving': 3,
-  'Paying Out': 4,
+  [AVAILABLE_KEY]: 1,
+  [BIDDING_KEY]: 1,
+  [PENDING_KEY]: 2,
+  [APPROVING_KEY]: 3,
+  [PAYING_OUT_KEY]: 4,
 }
 
 export default {

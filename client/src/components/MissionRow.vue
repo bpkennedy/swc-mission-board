@@ -61,7 +61,7 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { formatPrice } from '../utils'
 import {
   BOARD_IMAGE_URL_GETTER,
@@ -76,20 +76,6 @@ export default {
     mission: {
       type: Object,
       required: true
-    }
-  },
-  data() {
-    return {
-      statusColors: {
-        'Available': 'blue-13',
-        'Bidding': 'blue-13',
-        'Pending': 'orange-13',
-        'Approving': 'purple-13',
-        'Paying Out': 'green-13',
-        'Withdraw': 'red-13',
-        'Declined': 'red-13',
-        'Complete': 'blue-grey-13',
-      }
     }
   },
   methods: {
@@ -117,6 +103,7 @@ export default {
       USER_IMAGE_URL_GETTER,
       USER_NAME_GETTER,
     ]),
+    ...mapState(['statusColors']),
     missionDestination() {
       return this.mission.ending_system_name ? this.mission.ending_system_name : 'secret location'
     },
