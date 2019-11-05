@@ -55,6 +55,7 @@ const initialState = () => {
 }
 
 export const NEW_MISSION_FORM_RESET_EVENT = 'NEW_MISSION_FORM_RESET_EVENT'
+export const LEAVE_FEEDBACK_ACTION = 'LEAVE_FEEDBACK_ACTION'
 export const START_ADMIN_TASK_ACTION = 'START_ADMIN_TASK_ACTION'
 export const GET_INITIAL_APP_DATA = 'GET_INITIAL_APP_DATA'
 export const GET_PROFILE_ACTION = 'GET_PROFILE_ACTION'
@@ -145,6 +146,10 @@ export default new Vuex.Store({
     async [GET_PROFILE_ACTION]({ commit }) {
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'users/me')
       commit(SET_PROFILE_MUTATION, data)
+    },
+    async [LEAVE_FEEDBACK_ACTION]({ commit }, formData) {
+      console.log('leave feedback called')
+      console.log(formData)
     },
     async [GET_USERS_ACTION]({ commit }) {
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'users')

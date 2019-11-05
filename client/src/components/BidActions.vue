@@ -141,6 +141,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog
+      v-model="feedbackDialog"
+      :maximized="true"
+      persistent
+      transition-show="slide-up"
+      transition-hide="slide-down"
+    >
+      <leave-feedback />
+    </q-dialog>
     <confirm
       message="Are you sure you want to withdraw this mission?"
       :show="withdrawClicked"
@@ -170,6 +179,7 @@ import Vue from 'vue'
 import { mapState, mapGetters } from 'vuex'
 import { genericError, genericSuccess } from '../utils'
 import Confirm from './Confirm.vue'
+import LeaveFeedback from './LeaveFeedback.vue'
 
 import {
   CREATE_BID_ACTION,
@@ -189,10 +199,12 @@ export default {
   name: 'BidActions',
   components: {
     Confirm,
+    LeaveFeedback,
   },
   data() {
     return {
       selectBidDialog: false,
+      feedbackDialog: false,
       selectedBidder: '',
       withdrawClicked: false,
       declineClicked: false,
@@ -259,6 +271,9 @@ export default {
       }
       Vue.set(this.buttonLoading, 'withdrawMission', false)
     },
+    async leaveFeedback() {
+      Vue.set(this, 'feedbackDialog', true)
+    },
     async markPaid() {
       Vue.set(this.buttonLoading, 'markPaid', true)
       Vue.set(this, 'markPaidClicked', false)
@@ -270,7 +285,6 @@ export default {
       }
       Vue.set(this.buttonLoading, 'markPaid', false)
     },
-    async leaveFeedback() {},
     async postBid() {
       if (this.validateCanBid) {
         this.genericError('You already bid on this mission.')
