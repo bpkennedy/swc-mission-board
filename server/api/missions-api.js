@@ -2,7 +2,7 @@ import { Promise } from 'es6-promise'
 import { uniqBy } from 'lodash'
 import { Router } from 'express'
 import { getAll, getOne, query, generateNewDocRef, systems, createMultiple, updateOrCreateMultiple } from '../db'
-import { updateMissionEvent, createMissionEvent } from '../lib/logging'
+import { updateMissionEvent, createMissionEvent, eventToNotification } from '../lib/logging'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
 import { celebrate, Joi } from 'celebrate'
 import {
@@ -68,7 +68,7 @@ function hydratedSystemMissions (missions) {
   })
 }
 
-async function updateMissionStatus(mission, missionStatus, bidStatus, removeContractor, currentUserUid) {
+async function updateMissionStatus(io, mission, missionStatus, bidStatus, removeContractor, currentUserUid) {
   const updateRefSetArray = []
   const targetUserUids = []
   
@@ -105,11 +105,13 @@ async function updateMissionStatus(mission, missionStatus, bidStatus, removeCont
       contractor_id: removeContractor ? null : mission.contractor_id,
     }
   })
+  const newEventRef = await generateNewDocRef('events')
   const event = await updateMissionEvent(mission, targetUserUids, missionStatus, currentUserUid)
   await updateOrCreateMultiple({
     updateRefSetArray,
-    createRefSetArray: [{ collection: 'events', updateSet: event }]
+    createRefSetArray: [{ collection: 'events', updateSet: event, ref: newEventRef }]
   })
+  io.emit('broadcast', JSON.stringify(eventToNotification({...event, uid: newEventRef.id})))
 }
 
 export default () => {
@@ -163,12 +165,14 @@ export default () => {
       status: AVAILABLE_KEY,
       created_by: req.swcUid,
     }
+    const newEventRef = await generateNewDocRef('events')
     const event = await createMissionEvent(req.body.title, [req.swcUid], req.swcUid)
     const newMissionRef = await generateNewDocRef('missions')
     await createMultiple([
       { collection: 'missions', updateSet, ref: newMissionRef },
-      { collection: 'events', updateSet: event, }
+      { collection: 'events', updateSet: event, ref: newEventRef}
     ])
+    req.io.emit('broadcast', JSON.stringify(eventToNotification({...event, uid: newEventRef.id})))
     const newMission = await getOne({ collection: 'missions', id: newMissionRef.id })
     res.status(201).send(newMission)
   })
@@ -179,7 +183,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, WITHDRAWN_KEY, WITHDRAWN_KEY, true, req.swcUid)
+    await updateMissionStatus(req.io, mission, WITHDRAWN_KEY, WITHDRAWN_KEY, true, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })
@@ -190,7 +194,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, DECLINED_KEY, DECLINED_KEY, true, req.swcUid)
+    await updateMissionStatus(req.io, mission, DECLINED_KEY, DECLINED_KEY, true, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })
@@ -201,7 +205,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, PAYING_OUT_KEY, COMPLETE_KEY, false, req.swcUid)
+    await updateMissionStatus(req.io, mission, PAYING_OUT_KEY, COMPLETE_KEY, false, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })
@@ -212,7 +216,7 @@ export default () => {
     })
   }), async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
-    await updateMissionStatus(mission, APPROVING_KEY, ACTIVE_KEY, false, req.swcUid)
+    await updateMissionStatus(req.io, mission, APPROVING_KEY, ACTIVE_KEY, false, req.swcUid)
     const updatedMission = await getOne({ collection: 'missions', id: req.params.id })
     res.status(200).send(updatedMission)
   })

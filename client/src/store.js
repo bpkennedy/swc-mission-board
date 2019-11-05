@@ -73,6 +73,7 @@ export const DECLINE_MISSION_ACTION = 'DECLINE_MISSION_ACTION'
 export const COMPLETE_MISSION_ACTION = 'COMPLETE_MISSION_ACTION'
 export const MARK_PAID_MISSION_ACTION = 'MARK_PAID_MISSION_ACTION'
 export const SET_MISSION_FILTER_LABEL_ACTION = 'SET_MISSION_FILTER_LABEL_ACTION'
+export const MARK_READ_NOTIFICATIONS_ACTION = 'MARK_READ_NOTIFICATIONS_ACTION'
 
 const SET_PROFILE_MUTATION = 'SET_PROFILE_MUTATION'
 const SET_USERS_MUTATION = 'SET_USERS_MUTATION'
@@ -86,6 +87,7 @@ const SET_MISSION_TYPES_MUTATION = 'SET_MISSION_TYPES_MUTATION'
 const SET_BIDS_MUTATION = 'SET_BIDS_MUTATION'
 const SET_MISSION_FILTER_LABEL_MUTATION = 'SET_MISSION_FILTER_LABEL_MUTATION'
 const SET_NOTIFICATIONS_MUTATION = 'SET_NOTIFICATIONS_MUTATION'
+export const PUSH_NEW_NOTIFICATION_MUTATION = 'PUSH_NEW_NOTIFICATION_MUTATION'
 
 export const PUBLIC_MISSIONS_GETTER = 'PUBLIC_MISSIONS_GETTER'
 export const MISSION_TYPE_GETTER = 'MISSION_TYPE_GETTER'
@@ -98,6 +100,7 @@ export const BOARD_IMAGE_URL_GETTER = 'BOARD_IMAGE_URL_GETTER'
 export const BOARD_NAME_GETTER = 'BOARD_NAME_GETTER'
 export const USER_IMAGE_URL_GETTER = 'USER_IMAGE_URL_GETTER'
 export const USER_NAME_GETTER = 'USER_NAME_GETTER'
+export const UNREAD_NOTIFICATIONS_GETTER = 'UNREAD_NOTIFICATIONS_GETTER'
 export const MISSION_IS_BIDDING = 'MISSION_IS_BIDDING'
 export const MISSION_IS_PENDING = 'MISSION_IS_PENDING'
 export const MISSION_IS_APPROVING = 'MISSION_IS_APPROVING'
@@ -227,6 +230,18 @@ export default new Vuex.Store({
     async [SET_MISSION_FILTER_LABEL_ACTION]({ commit }, label) {
       commit(SET_MISSION_FILTER_LABEL_MUTATION, label)
     },
+    async [MARK_READ_NOTIFICATIONS_ACTION]({ state, commit, getters }) {
+      const unreads = getters[UNREAD_NOTIFICATIONS_GETTER]
+      if (state.user.uid && unreads.length > 0) {
+        const notificationIds = unreads.map(u => u.uid)
+        await Vue.prototype.$axios.put(apiUrl + 'notifications/mark-read', {
+          notificationIds,
+          readerUid: state.user.uid,
+        })
+        const updatedNotificationsResponse = await Vue.prototype.$axios.get(apiUrl + 'notifications/me')
+        commit(SET_NOTIFICATIONS_MUTATION, updatedNotificationsResponse.data)
+      }
+    },
   },
   mutations: {
     [SET_PROFILE_MUTATION](state, user) {
@@ -264,7 +279,10 @@ export default new Vuex.Store({
     },
     [SET_NOTIFICATIONS_MUTATION](state, notifications) {
       Vue.set(state, 'notifications', notifications)
-    }
+    },
+    [PUSH_NEW_NOTIFICATION_MUTATION](state, notification) {
+      Vue.set(state, 'notifications', [ notification, ...state.notifications ])
+    },
   },
   getters: {
     [PUBLIC_MISSIONS_GETTER]: state => {
@@ -340,6 +358,9 @@ export default new Vuex.Store({
     },
     [MISSION_IS_PAID]: state => {
       return state.mission.status === PAYING_OUT_KEY
+    },
+    [UNREAD_NOTIFICATIONS_GETTER]: state => {
+      return state.notifications.filter(n => !n.target_user_read.includes(state.user.uid))
     },
   }
 })

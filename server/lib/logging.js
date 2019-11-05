@@ -2,6 +2,30 @@ import { generateNewDocRef, db } from '../db'
 import { userHandle } from '../api/users-api'
 import { uniqBy } from 'lodash'
 
+export const eventToNotification = (event) => {
+  if (typeof event.created_at.toDate === 'function') {
+    return {
+      uid: event.uid,
+      type: event.type,
+      created_at: event.created_at.toDate().toLocaleString(),
+      message: event.message,
+      target_user_uids: event.target_user_uids,
+      target_user_read: event.target_user_read,
+      origin_user_uid: event.origin_user_uid,
+    }
+  } else {
+    return {
+      uid: event.uid,
+      type: event.type,
+      created_at: event.created_at.toLocaleString(),
+      message: event.message,
+      target_user_uids: event.target_user_uids,
+      target_user_read: event.target_user_read,
+      origin_user_uid: event.origin_user_uid,
+    }
+  }
+}
+
 export const logUserEvent = async ({ message, targetUserUids, originUserUid }) => {
   if (message && targetUserUids.length > 0 && originUserUid) {
     const newRef = await generateNewDocRef('events')
@@ -53,7 +77,6 @@ export async function updateMissionEvent(mission, targetUserUids, missionStatus,
 }
 
 export async function createBidEvent(mission, targetUserUids, currentUserUid) {
-  console.log(currentUserUid)
   const biddingUserHandle = await userHandle(currentUserUid)
   const message = `${mission.title} - ${biddingUserHandle} sent a bid for this mission.`
   return newLog({

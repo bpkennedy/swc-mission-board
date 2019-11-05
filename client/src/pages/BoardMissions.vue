@@ -45,9 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'boardMissions'
-    ]),
+    ...mapState(['boardMissions']),
   },
   methods: {
     forceMapRerender() {

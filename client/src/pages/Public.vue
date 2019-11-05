@@ -36,9 +36,7 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'missions'
-    ])
+    ...mapState(['missions'])
   },
   methods: {
     forceMapRerender() {

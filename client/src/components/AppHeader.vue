@@ -31,11 +31,16 @@
         icon="notifications"
         class="q-mr-sm"
         to="/notifications"
-      />
-      <!-- <q-badge color="red" floating transparent>
-          4
-        </q-badge> -->
-      <!-- </q-btn> -->
+      >
+        <q-badge
+          v-if="UNREAD_NOTIFICATIONS_GETTER.length"
+          color="red"
+          floating
+          transparent
+        >
+          {{ UNREAD_NOTIFICATIONS_GETTER.length }}
+        </q-badge>
+      </q-btn>
       <q-avatar rounded>
         <q-img
           :src="currentUserPhotoUrl"
@@ -59,7 +64,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { BOARD_IMAGE_URL_GETTER } from '../store'
+import { BOARD_IMAGE_URL_GETTER, UNREAD_NOTIFICATIONS_GETTER } from '../store'
 import TabNav from './TabNav.vue'
 import NewMission from './NewMission.vue'
 
@@ -75,9 +80,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      BOARD_IMAGE_URL_GETTER,
-    ]),
+    ...mapGetters([ BOARD_IMAGE_URL_GETTER, UNREAD_NOTIFICATIONS_GETTER ]),
     currentUserPhotoUrl() {
       return this.$store.state.user.image ? this.$store.state.user.image : ''
     },

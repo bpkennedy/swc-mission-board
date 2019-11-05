@@ -1,6 +1,9 @@
 import { Router } from 'express'
-import { query } from '../db'
+import { query, updateMultiple } from '../db'
 import { swcAuthenticatedMiddleware } from '../lib/swc'
+import { eventToNotification } from '../lib/logging'
+import { celebrate, Joi } from 'celebrate'
+import { FieldValue } from '@google-cloud/firestore'
 
 export default () => {
   let api = Router()
@@ -15,12 +18,26 @@ export default () => {
       collection: 'events',
       querySets: currentUserNotificationsQuery
     })
-    const trimmedNotifications = myEvents.map(e => ({
-      type: e.type,
-      created_at: e.created_at.toDate().toLocaleString(),
-      message: e.message,
-    }))
+    const trimmedNotifications = myEvents.map(e => eventToNotification(e))
     res.status(200).send(trimmedNotifications)
+  })
+  
+  api.put('/mark-read', swcAuthenticatedMiddleware, celebrate({
+    body: Joi.object().keys({
+      notificationIds: Joi.array().items(Joi.string()).required(),
+      readerUid: Joi.string().required(),
+    })
+  }), async (req, res) => {
+    const updateRefSetArray = []
+    for (const id of req.body.notificationIds) {
+      updateRefSetArray.push({
+        collection: 'events',
+        id,
+        updateSet: { target_user_read: FieldValue.arrayUnion(req.body.readerUid) },
+      })
+    }
+    await updateMultiple(updateRefSetArray)
+    res.status(200).send()
   })
 
 	return api

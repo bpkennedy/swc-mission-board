@@ -17,6 +17,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { MARK_READ_NOTIFICATIONS_ACTION } from '../store'
 
 export default {
   name: 'Notifications',
@@ -24,6 +25,8 @@ export default {
     return {
       pagination: {
         rowsPerPage: 100,
+        sortBy: 'created_at',
+        descending: true,
       },
       columns: [
         {
@@ -51,9 +54,18 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'notifications',
-    ])
+    ...mapState(['notifications', 'user'])
+  },
+  created() {
+    this.$store.dispatch(MARK_READ_NOTIFICATIONS_ACTION)
+  },
+  watch: {
+    user() {
+      this.$store.dispatch(MARK_READ_NOTIFICATIONS_ACTION)
+    },
+    notifications() {
+      this.$store.dispatch(MARK_READ_NOTIFICATIONS_ACTION)
+    }
   }
 }
 </script>
