@@ -2,9 +2,8 @@
   <div>
     <q-item-label
       header
-      class="text-weight-bold text-body1"
     >
-      Assigned Contractor
+      {{ contractorAssignmentLabel }}
     </q-item-label>
     <q-item
       clickable
@@ -44,6 +43,7 @@ import { mapState, mapGetters } from 'vuex'
 import {
   USER_IMAGE_URL_GETTER,
   USER_NAME_GETTER,
+  MISSION_IS_PAID,
 } from '../store'
 
 export default {
@@ -55,7 +55,11 @@ export default {
     ...mapGetters([
       USER_IMAGE_URL_GETTER,
       USER_NAME_GETTER,
-    ])
+      MISSION_IS_PAID,
+    ]),
+    contractorAssignmentLabel() {
+      return this.MISSION_IS_PAID ? 'Completed By' : 'Assigned Contractor'
+    },
   }
 }
 </script>

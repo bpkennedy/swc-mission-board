@@ -55,6 +55,16 @@ export function newLog({ message, targetUserUids, originUserUid, type }) {
   throw new Error(`Cannot create new log object with params = message:${message}, targetUserUids:${JSON.stringify(targetUserUids)}, originUserUid:${originUserUid}.`)
 }
 
+export async function createFeedbackEvent(missionTitle, targetUserUids, currentUserUid) {
+  const currentUserHandle = await userHandle(currentUserUid)
+  return newLog({
+    message: `${missionTitle} - feedback left by ${currentUserHandle}`,
+    targetUserUids,
+    originUserUid: currentUserUid,
+    type: 'feedback',
+  })
+}
+
 export async function createMissionEvent(missionTitle, targetUserUids, currentUserUid) {
   const currentUserHandle = await userHandle(currentUserUid)
   return newLog({

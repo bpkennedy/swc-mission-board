@@ -38,6 +38,7 @@
       title="Paying Out"
       icon="attach_money"
       active-icon="attach_money"
+      active-color="green-6"
       done-icon="attach_money"
       done-color="green-6"
       :done="step > 4"

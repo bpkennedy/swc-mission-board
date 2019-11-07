@@ -87,6 +87,7 @@
         :created-by="mission.created_by"
         :origin-board-id="mission.origin_board_id"
       />
+      <contractor v-if="MISSION_IS_PAID" />
     </q-scroll-area>
   </q-list>
   <q-card v-else>
@@ -98,14 +99,17 @@
 </style>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { formatPrice } from '../utils'
 import CreatedBy from './CreatedBy.vue'
+import Contractor from './Contractor.vue'
+import { MISSION_IS_PAID } from '../store'
 
 export default {
   name: 'MissionSummary',
   components: {
     CreatedBy,
+    Contractor,
   },
   props: {
     display: {
@@ -121,7 +125,10 @@ export default {
   computed: {
     ...mapState([
       'mission',
-    ])
+    ]),
+    ...mapGetters([
+      MISSION_IS_PAID,
+    ]),
   },
   methods: {
     missionTypeName(typeUid) {

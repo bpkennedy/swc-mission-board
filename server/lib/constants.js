@@ -17,3 +17,7 @@ export const WITHDRAWN_COLOR = 'red-13'
 export const PAYING_OUT_COLOR = 'green-13'
 export const DECLINED_COLOR = 'red-13'
 export const COMPLETE_COLOR = 'blue-grey-13'
+
+export const POSITIVE = 'Positive'
+export const NEUTRAL = 'Neutral'
+export const NEGATIVE = 'Negative'

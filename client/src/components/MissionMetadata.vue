@@ -5,13 +5,25 @@
     class="no-top-border"
   >
     <q-scroll-area style="height: 100%;">
-      <contractor v-if="MISSION_IS_PENDING || MISSION_IS_APPROVING || MISSION_IS_PAID" />
+      <contractor v-if="MISSION_IS_PENDING || MISSION_IS_APPROVING" />
       <q-item-label header>
         Status
       </q-item-label>
       <mission-progress />
       <q-separator spaced />
       <bidders v-if="MISSION_IS_BIDDING" />
+      <div
+        v-if="MISSION_IS_PAID"
+        class="q-pa-md row items-start q-gutter-md"
+      >
+        <mission-feedback
+          v-for="feedback of mission.feedback"
+          :key="feedback.uid"
+          :comment="feedback.comment"
+          :contractor="feedback.reviewer_id"
+          :rating="feedback.rating"
+        />
+      </div>
       <bid-actions />
     </q-scroll-area>
   </q-list>
@@ -24,8 +36,9 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import MissionProgress from './MissionProgress.vue'
+import MissionFeedback from './MissionFeedback.vue'
 import Bidders from './Bidders.vue'
 import BidActions from './BidActions.vue'
 import Contractor from './Contractor.vue'
@@ -41,6 +54,7 @@ export default {
   name: 'MissionMetadata',
   components: {
     MissionProgress,
+    MissionFeedback,
     Bidders,
     BidActions,
     Contractor,
@@ -52,6 +66,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['mission']),
     ...mapGetters([
       MISSION_IS_BIDDING,
       MISSION_IS_PENDING,

@@ -135,7 +135,10 @@ export const createOne = async ({ collection, updateSet, id }) => {
 export const updateMultiple = async (refSetArray) => {
   return db.runTransaction(async t => {
     for (const refSet of refSetArray) {
-      await t.update(db.collection(refSet.collection).doc(refSet.id), refSet.updateSet)
+      await t.update(db.collection(refSet.collection).doc(refSet.id), { 
+        ...refSet.updateSet,
+        modified_at: new Date(),
+      })
     }
   })
 }
@@ -147,7 +150,9 @@ export const createMultiple = async (refSetArray) => {
       const uid = newRef.id
       await t.set(newRef, {
         uid,
-        ...refSet.updateSet
+        ...refSet.updateSet,
+        created_at: new Date(),
+        modified_at: new Date(),
       })
     }
   })
@@ -160,11 +165,16 @@ export const updateOrCreateMultiple = async ({ updateRefSetArray, createRefSetAr
       const uid = newRef.id
       await t.set(newRef, {
         uid,
-        ...refSet.updateSet
+        ...refSet.updateSet,
+        created_at: new Date(),
+        modified_at: new Date(),
       })
     }
     for (const refSet of updateRefSetArray) {
-      await t.update(db.collection(refSet.collection).doc(refSet.id), refSet.updateSet)
+      await t.update(db.collection(refSet.collection).doc(refSet.id), {
+        ...refSet.updateSet,
+        modified_at: new Date(),
+      })
     }
   })
 }

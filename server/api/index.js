@@ -8,6 +8,7 @@ import bidsApi from './bids-api'
 import tasksApi from './tasks-api'
 import sectorsApi from './sectors-api'
 import notificationsApi from './notifications-api'
+import feedbackApi from './feedback-api'
 
 export const createApiRoutes = () => {
 	let api = Router()
@@ -20,5 +21,6 @@ export const createApiRoutes = () => {
 	api.use('/tasks', tasksApi())
 	api.use('/sectors', sectorsApi())
 	api.use('/notifications', notificationsApi())
+	api.use('/feedback', feedbackApi())
 	return api
 }

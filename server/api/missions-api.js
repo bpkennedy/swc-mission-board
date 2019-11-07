@@ -68,6 +68,19 @@ function hydratedSystemMissions (missions) {
   })
 }
 
+async function hydrateMissionFeedback(missionId) {
+  const feedbackForMissionQuery = [{
+    field: 'mission_id',
+    comparison: '==',
+    value: missionId,
+  }]
+  const missionFeedback = await query({
+    collection: 'feedback',
+    querySets: feedbackForMissionQuery
+  })
+  return missionFeedback
+}
+
 async function updateMissionStatus(io, mission, missionStatus, bidStatus, removeContractor, currentUserUid) {
   const updateRefSetArray = []
   const targetUserUids = []
@@ -286,6 +299,7 @@ export default () => {
   api.get('/:id', swcAuthenticatedMiddleware, async (req, res) => {
     const mission = await getOne({ collection: 'missions', id: req.params.id })
     if (mission) {
+      mission.feedback = await hydrateMissionFeedback(req.params.id)
       res.status(200).send(addMapCoordinatesToMission(mission))
     } else {
       res.status(404).send('Not found.')

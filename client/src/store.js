@@ -147,9 +147,15 @@ export default new Vuex.Store({
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'users/me')
       commit(SET_PROFILE_MUTATION, data)
     },
-    async [LEAVE_FEEDBACK_ACTION]({ commit }, formData) {
-      console.log('leave feedback called')
-      console.log(formData)
+    async [LEAVE_FEEDBACK_ACTION]({ dispatch }, { missionId, formData, closePopupElement }) {
+      try {
+        await Vue.prototype.$axios.post(apiUrl + 'feedback', formData)
+        genericSuccess('Left feedback')
+        closePopupElement.click()
+        dispatch(GET_MISSION_ACTION, missionId)
+      } catch (error) {
+        genericError('An error occurred. Failed to leave feedback.')
+      }
     },
     async [GET_USERS_ACTION]({ commit }) {
       const { data } = await Vue.prototype.$axios.get(apiUrl + 'users')

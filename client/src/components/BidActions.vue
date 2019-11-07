@@ -85,7 +85,7 @@
       </template>
     </q-btn>
     <q-btn
-      v-if="(userIsCreator || userIsContractor) && MISSION_IS_PAID"
+      v-if="showLeaveFeedbackButton"
       color="negative"
       text-color="white"
       label="Leave Feedback"
@@ -272,6 +272,10 @@ export default {
       Vue.set(this.buttonLoading, 'withdrawMission', false)
     },
     async leaveFeedback() {
+      if (this.validateAlreadyLeftFeedback) {
+        this.genericError('You already left feedback on this mission.')
+        return
+      }
       Vue.set(this, 'feedbackDialog', true)
     },
     async markPaid() {
@@ -286,7 +290,7 @@ export default {
       Vue.set(this.buttonLoading, 'markPaid', false)
     },
     async postBid() {
-      if (this.validateCanBid) {
+      if (this.validateAlreadyBid) {
         this.genericError('You already bid on this mission.')
         return
       }
@@ -318,7 +322,7 @@ export default {
       MISSION_IS_APPROVING,
       MISSION_IS_PAID,
     ]),
-    validateCanBid() {
+    validateAlreadyBid() {
       return this.bids.find(bid => bid.bidder_id === this.user.uid)
     },
     userIsCreator() {
@@ -326,6 +330,17 @@ export default {
     },
     userIsContractor() {
       return this.mission.contractor_id === this.user.uid
+    },
+    validateAlreadyLeftFeedback() {
+      return (this.userIsCreator || this.userIsContractor) && MISSION_IS_PAID && this.mission.feedback.find(f => f.reviewer_id === this.user.uid)
+    },
+    showLeaveFeedbackButton() {
+      if (this.mission.feedback.find(f => f.reviewer_id === this.user.uid)) {
+        return false
+      } else if (this.userIsCreator || this.userIsContractor) {
+        return true
+      }
+      return false
     }
   }
 }

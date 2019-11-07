@@ -68,7 +68,9 @@
 
 <script>
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import { LEAVE_FEEDBACK_ACTION } from '../store'
+import { POSITIVE, NEUTRAL, NEGATIVE } from '../constants'
 
 export default {
   name: 'LeaveFeedback',
@@ -81,20 +83,23 @@ export default {
       },
       ratingTypes: [
         {
-          value: 'positive',
-          label: 'Positive',
+          value: POSITIVE,
+          label: POSITIVE,
         },
         {
-          value: 'neutral',
-          label: 'Neutral',
+          value: NEUTRAL,
+          label: NEUTRAL,
         },
         {
-          value: 'negative',
-          label: 'Negative',
+          value: NEGATIVE,
+          label: NEGATIVE,
         },
       ],
       loadingIsVisible: false,
     }
+  },
+  computed: {
+    ...mapState(['mission'])
   },
   methods: {
     closeDialog() {
@@ -104,9 +109,11 @@ export default {
     async onSubmit () {
       this.loadingIsVisible = true
       await this.$store.dispatch(LEAVE_FEEDBACK_ACTION, {
+        missionId: this.mission.uid,
         formData: {
           comment: this.feedbackData.comment.trim(),
-          rating: this.feedbackData.rating,
+          rating: this.feedbackData.rating.value,
+          missionId: this.mission.uid,
         },
         closePopupElement: this.$refs.closeButton.$el,
       })
