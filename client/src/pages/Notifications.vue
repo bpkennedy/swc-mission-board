@@ -3,7 +3,7 @@
     <q-card class="full-width q-pa-sm">
       <q-card-section>
         <q-table
-          :data="notifications"
+          :data="hydratedNotifications"
           :columns="columns"
           row-key="index"
           virtual-scroll
@@ -16,13 +16,16 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import { mapState } from 'vuex'
 import { MARK_READ_NOTIFICATIONS_ACTION } from '../store'
+import { swcTime } from '../utils'
 
 export default {
   name: 'Notifications',
   data() {
     return {
+      hydratedNotifications: [],
       pagination: {
         rowsPerPage: 100,
         sortBy: 'created_at',
@@ -56,15 +59,20 @@ export default {
   computed: {
     ...mapState(['notifications', 'user'])
   },
-  created() {
-    this.$store.dispatch(MARK_READ_NOTIFICATIONS_ACTION)
-  },
   watch: {
     user() {
       this.$store.dispatch(MARK_READ_NOTIFICATIONS_ACTION)
     },
-    notifications() {
-      this.$store.dispatch(MARK_READ_NOTIFICATIONS_ACTION)
+    notifications: {
+      immediate: true,
+      handler() {
+        this.$store.dispatch(MARK_READ_NOTIFICATIONS_ACTION)
+        const notificationsWithDates = this.notifications.map(n => ({
+          ...n,
+          created_at: swcTime(n.created_at),
+        }))
+        Vue.set(this, 'hydratedNotifications', notificationsWithDates)
+      }
     }
   }
 }
