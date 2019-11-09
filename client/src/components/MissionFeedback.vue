@@ -25,10 +25,11 @@
     </q-item>
     <q-card-section>
       <q-item-label>
-        <span :class="{
-        'text-positive':rating === 'Positive',
-        '':rating === 'Neutral',
-        'text-negative':rating === 'Negative'}"
+        <span
+          :class="{
+            'text-positive':rating === 'Positive',
+            '':rating === 'Neutral',
+            'text-negative':rating === 'Negative'}"
         >
           {{ rating }}
         </span>: {{ comment }}
