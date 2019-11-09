@@ -7,24 +7,32 @@
         'bg-blue-grey':rating === 'Neutral',
         'bg-negative':rating === 'Negative'}"
     >
-      <q-item-section avatar>
-        <q-avatar>
-          <img :src="USER_IMAGE_URL_GETTER(contractor)">
-        </q-avatar>
-      </q-item-section>
-
       <q-item-section>
-        <q-item-label>{{ USER_NAME_GETTER(contractor) }}</q-item-label>
+        <q-chip class="feedback-chip">
+          <q-avatar>
+            <img :src="USER_IMAGE_URL_GETTER(contractor)">
+          </q-avatar>
+          <div class="ellipsis user-name">
+            {{ USER_NAME_GETTER(contractor) }}
+          </div>
+        </q-chip>
         <q-item-label
-          caption
-          class="text-white"
+          class="text-white text-overline q-pa-xs"
         >
-          {{ rating }}
+          {{ swcTime(createdAt) }}
         </q-item-label>
       </q-item-section>
     </q-item>
     <q-card-section>
-      {{ comment }}
+      <q-item-label>
+        <span :class="{
+        'text-positive':rating === 'Positive',
+        '':rating === 'Neutral',
+        'text-negative':rating === 'Negative'}"
+        >
+          {{ rating }}
+        </span>: {{ comment }}
+      </q-item-label>
     </q-card-section>
   </q-card>
 </template>
@@ -32,11 +40,19 @@
 <style lang="stylus">
 .feedback-card {
   width: 100%;
+  max-width: 13rem;
+}
+.feedback-chip {
+  max-width: 10.5rem;
+}
+.user-name {
+  max-width: 7.5rem;
 }
 </style>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import { swcTime } from '../utils'
 import { USER_NAME_GETTER, USER_IMAGE_URL_GETTER } from '../store'
 
 export default {
@@ -53,6 +69,10 @@ export default {
     rating: {
       type: String,
       default: '',
+    },
+    createdAt: {
+      type: String,
+      required: true,
     }
   },
   computed: {
@@ -63,6 +83,9 @@ export default {
       USER_NAME_GETTER,
       USER_IMAGE_URL_GETTER,
     ]),
-  }
+  },
+  methods: {
+    swcTime,
+  },
 }
 </script>

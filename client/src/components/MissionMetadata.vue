@@ -22,6 +22,7 @@
           :comment="feedback.comment"
           :contractor="feedback.reviewer_id"
           :rating="feedback.rating"
+          :created-at="feedback.created_at"
         />
       </div>
       <bid-actions />

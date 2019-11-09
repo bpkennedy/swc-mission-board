@@ -78,5 +78,5 @@ export const swcTime = (dateString) => {
   timeLeft -= minute * SECONDS_IN_MINUTE
   const second = Math.floor(timeLeft)
 
-  return `Y ${year} D ${day}, ${hour}:${minute}:${second}`
+  return `Y${year} D${day}, ${hour}:${minute}:${second}`
 }

@@ -78,7 +78,7 @@ async function hydrateMissionFeedback(missionId) {
     collection: 'feedback',
     querySets: feedbackForMissionQuery
   })
-  return missionFeedback
+  return missionFeedback.map(m => ({ ...m, created_at: m.created_at.toDate()}))
 }
 
 async function updateMissionStatus(io, mission, missionStatus, bidStatus, removeContractor, currentUserUid) {
